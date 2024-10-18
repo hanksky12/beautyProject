@@ -1,17 +1,17 @@
 package user
 
 import (
-	"beautyProject/internal/backend/user"
 	"beautyProject/internal/pkg/web/gin/handler/response"
 	"beautyProject/internal/pkg/web/request"
+	"beautyProject/internal/services/backend/user"
 	"github.com/gin-gonic/gin"
 )
 
 type Handler struct{}
 
 func (h *Handler) Register(c *gin.Context, req request.UserReq) {
-	userOb := user.User{}
-	msgDto := userOb.Register(req)
+	userServ := user.User{}
+	msgDto := userServ.Register(req)
 	response.ProcessMsgDto(c, msgDto)
 }
 

@@ -10,11 +10,10 @@ import (
 	"time"
 )
 
-var DB *gorm.DB
+var Db *gorm.DB
 
 func Init() {
 	envMysql := env.GetStringMapString("MySQL")
-
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		envMysql["user"],
@@ -23,8 +22,8 @@ func Init() {
 		envMysql["port"],
 		envMysql["db_name"],
 	)
-	log.Info("dsn: ", dsn)
-	DB = connectDB(dsn)
+	//log.Info("dsn: ", dsn)
+	Db = connectDB(dsn)
 }
 
 func connectDB(dsn string) *gorm.DB {
@@ -35,6 +34,9 @@ func connectDB(dsn string) *gorm.DB {
 		panic(err)
 	}
 	sqlDB, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
 	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
 	sqlDB.SetMaxIdleConns(10)
 	// SetMaxOpenConns sets the maximum number of open connections to the database.
