@@ -9,19 +9,19 @@ import (
 
 type Handler struct{}
 
-func (h *Handler) Register(c *gin.Context, reqId string, req request.UserReq) {
-	userOb := user.User{reqId}
+func (h *Handler) Register(c *gin.Context, req request.UserReq) {
+	userOb := user.User{}
 	msgDto := userOb.Register(req)
 	response.ProcessMsgDto(c, msgDto)
 }
 
-func (h *Handler) Login(c *gin.Context, reqId string, req request.UserReq) {
-	userOb := user.User{reqId}
+func (h *Handler) Login(c *gin.Context, req request.UserReq) {
+	userOb := user.User{}
 	userOb.Login(req)
 	//response.Success(c, "登入成功")
 }
 
-func (h *Handler) Logout(c *gin.Context, reqId string, req request.EmptyReq) {
+func (h *Handler) Logout(c *gin.Context, req request.EmptyReq) {
 	userOb := user.User{}
 	userOb.Logout()
 	//response.Success(c, "已登出")

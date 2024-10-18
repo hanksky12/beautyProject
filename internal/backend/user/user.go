@@ -3,16 +3,16 @@ package user
 import (
 	"beautyProject/internal/pkg/dto"
 	"beautyProject/internal/pkg/web/request"
-	log "github.com/cihub/seelog"
+	log "github.com/sirupsen/logrus"
 )
 
 type User struct {
-	ReqId string
 }
 
 func (u *User) Register(req request.UserReq) dto.Msg {
 	msg := dto.Msg{Success: true, Message: "註冊成功"}
-	log.Infof("%v %v", u.ReqId, msg)
+	log.Infof("%v", msg)
+	//log.Infof("%v %v", u.ReqId, msg)
 	//panic("no value for $USER")
 	return msg
 

@@ -18,7 +18,6 @@ func Run() {
 func addMiddleware() {
 	mid.ContextLogger(router)
 	mid.AddLog(router)
-	//mid.RequestID(router)
 }
 
 func addRouter() {

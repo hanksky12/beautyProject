@@ -1,59 +1,65 @@
 package log
 
 import (
-	"bytes"
-	"fmt"
-	"github.com/cihub/seelog"
+	log "github.com/sirupsen/logrus"
+	"io"
 	"os"
-	"text/template"
+	"path"
+	"runtime"
 )
 
+/*
+ex:
+log.WithFields(log.Fields{
+  "event": event,
+  "topic": topic,
+  "key": key,
+}).Fatal("Failed to send event")
+*/
+
 func Init(filePath string) {
-	minLevel := getMinLevel()
-	appConfig, err := loadSeeLogConfig(minLevel, filePath)
-	if err != nil {
-		fmt.Println("Failed to load logger configuration:", err)
-		return
-	}
-	logger, err2 := seelog.LoggerFromConfigAsBytes(appConfig)
-	if err2 != nil {
-		fmt.Println(err2)
-		return
-	}
-	err = seelog.ReplaceLogger(logger)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Log Init Success")
-}
-func getMinLevel() string {
 	env := os.Getenv("GO_ENV")
+	setLevel(env)
+	setFormatter()
+	setOutput(filePath)
+	log.SetReportCaller(true)
+	log.Info("Log Init Success")
+}
+
+func setOutput(filePath string) {
+	writer1 := os.Stdout
+	writer2, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("create file log.txt failed: %v", err)
+	}
+	log.SetOutput(io.MultiWriter(writer1, writer2))
+
+}
+
+func setFormatter() {
+	log.SetFormatter(&log.JSONFormatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+		FieldMap: log.FieldMap{
+			log.FieldKeyTime:  "[time]",
+			log.FieldKeyLevel: "[lv]",
+			log.FieldKeyMsg:   "message",
+			log.FieldKeyFunc:  "[caller]",
+			log.FieldKeyFile:  "[file]",
+		},
+		CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) { //自定义Caller的返回
+			fileName := path.Base(frame.File)
+			return frame.Function, fileName
+		},
+		PrettyPrint: true})
+}
+
+func setLevel(env string) {
 	switch env {
 	case "development":
-		return "debug"
+		log.SetLevel(log.DebugLevel)
 	case "test", "production":
-		return "info"
+		log.SetLevel(log.InfoLevel)
 	default:
-		return "info" // 默認使用 info 級別
+		log.SetLevel(log.InfoLevel) // 默認使用 info 級別
 	}
-}
-
-func loadSeeLogConfig(minLevel, filePath string) ([]byte, error) {
-	tmpl, err := template.ParseFiles("internal/pkg/log/seelog.xml.template")
-	if err != nil {
-		return nil, err
-	}
-
-	// 使用模板生成最終的 Seelog 配置
-	var configBuffer bytes.Buffer
-	err = tmpl.Execute(&configBuffer,
-		struct {
-			MinLevel string
-			FilePath string
-		}{MinLevel: minLevel, FilePath: filePath})
-	if err != nil {
-		return nil, err
-	}
-	return configBuffer.Bytes(), nil
 }
