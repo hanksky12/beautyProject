@@ -1,0 +1,9 @@
+<seelog minlevel="{{.MinLevel}}">
+    <outputs formatid="common">
+        <rollingfile type="size" filename="{{.FilePath}}" maxsize="100000" maxrolls="5"/>
+        <console/>
+    </outputs>
+    <formats>
+        <format id="common" format="%Date %Time  [%LEV] %Msg%n" />
+    </formats>
+</seelog>
