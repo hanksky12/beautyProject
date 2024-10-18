@@ -1,6 +1,6 @@
 MySQL:
   host: "127.0.0.1"
-  port: "3306"
+  port: "3316"
   user: "root"
-  password: "dsf"
-  db_name: "traffic"
+  password: "my-secret-pw"
+  db_name: "beauty"
