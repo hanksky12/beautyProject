@@ -1,7 +1,7 @@
 package router
 
 import (
-	"beautyProject/internal/pkg/web/gin/handler/response"
+	"beautyProject/internal/pkg/util/web/gin/handler/response"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"runtime/debug"

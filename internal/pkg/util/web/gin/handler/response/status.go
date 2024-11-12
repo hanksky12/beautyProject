@@ -17,6 +17,10 @@ func Failed(c *gin.Context, message string) {
 	base(c, dto.Response{Code: http.StatusCreated, Message: message})
 }
 
+func Unauthorized(c *gin.Context) {
+	base(c, dto.Response{Code: http.StatusUnauthorized, Message: "Unauthorized"})
+}
+
 func Error(c *gin.Context, err error) {
 	base(c, dto.Response{Code: http.StatusBadRequest, Message: err.Error()})
 }

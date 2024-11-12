@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	logCustom "beautyProject/internal/pkg/log"
-	"beautyProject/internal/pkg/str"
+	logCustom "beautyProject/internal/pkg/util/log"
+	"beautyProject/internal/pkg/util/str"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )

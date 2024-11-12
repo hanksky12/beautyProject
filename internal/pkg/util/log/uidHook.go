@@ -1,7 +1,7 @@
 package log
 
 import (
-	"beautyProject/internal/pkg/str"
+	"beautyProject/internal/pkg/util/str"
 	log "github.com/sirupsen/logrus"
 )
 

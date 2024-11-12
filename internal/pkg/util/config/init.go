@@ -16,7 +16,7 @@ func Init() {
 	}
 	env := os.Getenv("GO_ENV")
 	log.Printf(env)
-	viper.SetConfigFile(fmt.Sprintf("internal/pkg/config/config.%s.yaml", env))
+	viper.SetConfigFile(fmt.Sprintf("internal/pkg/conf/config.%s.yaml", env))
 	err = viper.ReadInConfig()
 	if err != nil {
 		log.Fatalf("Error while reading default config file: %s", err)
