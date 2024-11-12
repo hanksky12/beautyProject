@@ -1,0 +1,11 @@
+MySQL:
+  host: "127.0.0.1"
+  port: "3316"
+  user: "root"
+  password: "my-secret-pw"
+  db_name: "beauty"
+
+
+Jwt:
+  secret_key: "the secret key"
+  access_token_expires: "360" # minutes
