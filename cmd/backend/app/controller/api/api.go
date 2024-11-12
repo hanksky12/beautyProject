@@ -1,7 +1,7 @@
 package api
 
 import (
-	"beautyProject/cmd/backend/router/api/user"
+	"beautyProject/cmd/backend/app/controller/api/user"
 	"github.com/gin-gonic/gin"
 )
 
