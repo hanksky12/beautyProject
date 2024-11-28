@@ -11,7 +11,7 @@ func Run() {
 	router := gin.New()
 	addMiddleware(router)
 	addRouter(router)
-	router.Run(":8080")
+	router.Run(":8070")
 }
 
 func addMiddleware(router *gin.Engine) {

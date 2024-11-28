@@ -9,3 +9,18 @@ MySQL:
 Jwt:
   secret_key: "THIS IS Fix"
   access_token_expires: "30" # minutes
+
+
+Kafka:
+  brokers:
+    - address: "localhost:9092"
+  topics:
+    - name: "cpu"
+      partition: 3
+      replication: 1
+    - name: "disk"
+      partition: 2
+      replication: 1
+    - name: "memory"
+      partition: 1
+      replication: 1

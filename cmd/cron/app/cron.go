@@ -16,7 +16,7 @@ func (j *AddJob) InProduction(scheduler *gocron.Scheduler) {
 	log.PrintCron(err)
 
 	// 上傳圖片，每分鐘的第 20 秒和第 50 秒執行
-	_, err = scheduler.CronWithSeconds("20,50 * * * * *").Do(job.AnotherTask)
+	_, err = scheduler.CronWithSeconds("20,50 * * * * *").Do(job.UploadImagesToWebServer)
 	log.PrintCron(err)
 }
 
@@ -27,7 +27,7 @@ func (j *AddJob) InOther(scheduler *gocron.Scheduler) {
 	_, err := scheduler.CronWithSeconds("0 * * * * *").Do(job.UploadImagesToWebServer, "hk")
 	log.PrintCron(err)
 
-	_, err = scheduler.CronWithSeconds("20,50 * * * * *").Do(job.AnotherTask)
+	_, err = scheduler.CronWithSeconds("20,50 * * * * *").Do(job.UploadImagesToWebServer)
 	log.PrintCron(err)
 }
 

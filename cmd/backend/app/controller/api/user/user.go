@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AddUserRoutes(rg *gin.RouterGroup) {
+func AddRoutes(rg *gin.RouterGroup) {
 	handler := Handler{}
 	rg.POST("/user",
 		router.Integrate(handler.Register, false))

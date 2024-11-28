@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	initBeforeApp.Run("log/cmd.log")
+	initBeforeApp.Run("log/cmd.log", false)
 	cmd.Execute(&controller.Job{})
 }

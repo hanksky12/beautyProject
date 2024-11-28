@@ -24,6 +24,7 @@ func Init() {
 	)
 	//log.Info("dsn: ", dsn)
 	Db = connectDB(dsn)
+	log.Info("Sql Init Success")
 }
 
 func connectDB(dsn string) *gorm.DB {
@@ -43,6 +44,5 @@ func connectDB(dsn string) *gorm.DB {
 	sqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
 	sqlDB.SetConnMaxLifetime(time.Hour)
-	log.Info("Sql Init Success")
 	return db
 }

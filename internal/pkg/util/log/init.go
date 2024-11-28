@@ -20,7 +20,7 @@ log.WithFields(log.Fields{
 func Init(filePath string) {
 	env := os.Getenv("GO_ENV")
 	setLevel(env)
-	setFormatter()
+	setFormatter(env)
 	setOutput(filePath)
 	log.SetReportCaller(true)
 	log.Info("Log Init Success")
@@ -36,21 +36,33 @@ func setOutput(filePath string) {
 
 }
 
-func setFormatter() {
-	log.SetFormatter(&log.JSONFormatter{
-		TimestampFormat: "2006-01-02 15:04:05",
-		FieldMap: log.FieldMap{
-			log.FieldKeyTime:  "[time]",
-			log.FieldKeyLevel: "[lv]",
-			log.FieldKeyMsg:   "message",
-			log.FieldKeyFunc:  "[caller]",
-			log.FieldKeyFile:  "[file]",
-		},
-		CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) { //自定义Caller的返回
-			fileName := path.Base(frame.File)
-			return frame.Function, fileName
-		},
-		PrettyPrint: true})
+func setFormatter(env string) {
+	switch env {
+	case "development":
+		log.SetFormatter(&log.TextFormatter{
+			ForceColors:     true,
+			FullTimestamp:   true,
+			TimestampFormat: "2006-01-02 15:04:05",
+			CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) { //自定义Caller的返回
+				fileName := path.Base(frame.File)
+				return frame.Function, fileName
+			}})
+	default:
+		log.SetFormatter(&log.JSONFormatter{
+			TimestampFormat: "2006-01-02 15:04:05",
+			FieldMap: log.FieldMap{
+				log.FieldKeyTime:  "[time]",
+				log.FieldKeyLevel: "[lv]",
+				log.FieldKeyMsg:   "message",
+				log.FieldKeyFunc:  "[caller]",
+				log.FieldKeyFile:  "[file]",
+			},
+			CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) { //自定义Caller的返回
+				fileName := path.Base(frame.File)
+				return frame.Function, fileName
+			},
+			PrettyPrint: true})
+	}
 }
 
 func setLevel(env string) {
