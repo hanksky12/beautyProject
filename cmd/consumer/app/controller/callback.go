@@ -1,26 +1,29 @@
 package controller
 
-import log "github.com/sirupsen/logrus"
+import (
+	"beautyProject/internal/pkg/enum"
+	"beautyProject/internal/pkg/repository"
+	"beautyProject/internal/services/consumer/pc"
+)
 
 type Callback struct {
 	Minutes int
 }
 
-func (c *Callback) CpuAnalyzeTask(key string, value string, headers map[string]string) {
-	log.Info(c.Minutes)
-	log.Info(key, value)
-	log.Info(headers)
-
+func (c *Callback) CpuRecord(key string, value string, headers map[string]string) {
+	c.RecordTask(enum.Cpu, key, value, headers)
 }
 
-func (c *Callback) DiskAnalyzeTask(key string, value string, headers map[string]string) {
-	log.Info(c.Minutes)
-	log.Info(key, value)
-	log.Info(headers)
+func (c *Callback) DiskRecord(key string, value string, headers map[string]string) {
+	c.RecordTask(enum.Disk, key, value, headers)
 }
 
-func (c *Callback) MemAnalyzeTask(key string, value string, headers map[string]string) {
-	log.Info(c.Minutes)
-	log.Info(key, value)
-	log.Info(headers)
+func (c *Callback) MemRecord(key string, value string, headers map[string]string) {
+	c.RecordTask(enum.Memory, key, value, headers)
+}
+
+func (c *Callback) RecordTask(hardware *enum.Hardware, key string, value string, headers map[string]string) {
+	repo := repository.StatusRecord{}
+	pc := pc.Hardware{}
+	pc.Record(hardware, key, value, headers, c.Minutes, repo)
 }

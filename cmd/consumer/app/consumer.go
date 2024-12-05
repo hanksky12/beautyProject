@@ -12,7 +12,7 @@ import (
 
 func Run() {
 	var wg sync.WaitGroup
-	handler := ConsumeHandler{}
+	handler := &ConsumeHandler{}
 	consumers := make([]*kafkaUtil.Consumer, 0, len(kafkaUtil.KafkaConf.Topics))
 	consumers = start(handler, consumers, wg)
 	waitShuttingDown()
@@ -22,7 +22,7 @@ func Run() {
 
 }
 
-func start(handler ConsumeHandler, consumers []*kafkaUtil.Consumer, wg sync.WaitGroup) []*kafkaUtil.Consumer {
+func start(handler *ConsumeHandler, consumers []*kafkaUtil.Consumer, wg sync.WaitGroup) []*kafkaUtil.Consumer {
 	for _, minutes := range []int{1, 2} {
 		callback := controller.Callback{Minutes: minutes}
 		for _, topic := range kafkaUtil.KafkaConf.Topics {
@@ -56,4 +56,4 @@ func waitShuttingDown() {
 }
 
 //callback := controller.Callback{Minutes: 1}
-//kafkaUtil.Consume("cpu", 0, 0, callback.CpuAnalyzeTask)
+//kafkaUtil.Consume("cpu", 0, 0, callback.CpuRecord)

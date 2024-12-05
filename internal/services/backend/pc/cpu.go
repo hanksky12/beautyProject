@@ -1,11 +1,13 @@
 package pc
 
 import (
+	"beautyProject/internal/pkg/enum"
 	"beautyProject/internal/pkg/util/mq/kafkaUtil"
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"github.com/shirou/gopsutil/cpu"
 	log "github.com/sirupsen/logrus"
+	"strconv"
 	"time"
 )
 
@@ -15,16 +17,23 @@ type Cpu struct {
 func (c *Cpu) Work(userId string) {
 	log.Info("CpuWork is working...")
 	percent, _ := cpu.Percent(time.Second, false)
-	message := fmt.Sprintf("CpuWork percent: %v", percent[0])
+	strPercent := strconv.FormatFloat(percent[0], 'f', -1, 64)
+	message := fmt.Sprintf("CpuWork percent: %v", strPercent)
+	log.Info(message)
+	strTime := strconv.FormatInt(time.Now().Unix(), 10)
 	ok := kafkaUtil.Produce(
-		"cpu",
+		enum.Cpu.Name,
 		kafka.Message{
 			//Key:   []byte(userId),
-			Value: []byte(message),
+			Value: []byte(strPercent),
 			Headers: []kafka.Header{
 				{
 					Key:   "user_id",
 					Value: []byte(userId),
+				},
+				{
+					Key:   "time",
+					Value: []byte(strTime),
 				},
 			},
 		})
