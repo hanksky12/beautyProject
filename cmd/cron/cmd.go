@@ -9,4 +9,5 @@ import (
 func main() {
 	initBeforeApp.Run("log/cmd.log", false)
 	cmd.Execute(&controller.Job{})
+	//go run ./cmd/cron/cmd.go -c Test -p hk
 }

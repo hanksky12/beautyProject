@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	initBeforeApp.Run("log/cron.log")
+	initBeforeApp.Run("log/cron.log", false)
 	app.Run()
 }
