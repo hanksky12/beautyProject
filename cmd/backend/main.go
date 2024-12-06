@@ -2,8 +2,8 @@ package main
 
 import (
 	"beautyProject/cmd/backend/app"
-	"beautyProject/internal/pkg/util/app/initAfterApp"
-	"beautyProject/internal/pkg/util/app/initBeforeApp"
+	"beautyProject/internal/pkg/util/app/initApp/initAfterApp"
+	"beautyProject/internal/pkg/util/app/initApp/initBeforeApp"
 )
 
 func main() {

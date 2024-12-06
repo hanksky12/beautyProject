@@ -3,7 +3,7 @@ package main
 import (
 	"beautyProject/cmd/consumer/app/controller"
 	"beautyProject/internal/pkg/util/app/cmd"
-	"beautyProject/internal/pkg/util/app/initBeforeApp"
+	"beautyProject/internal/pkg/util/app/initApp/initBeforeApp"
 )
 
 func main() {

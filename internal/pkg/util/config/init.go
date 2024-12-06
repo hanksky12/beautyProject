@@ -15,7 +15,6 @@ func Init() {
 		log.Println("No .env file found, continuing...")
 	}
 	env := os.Getenv("GO_ENV")
-	log.Printf(env)
 	viper.SetConfigFile(fmt.Sprintf("internal/pkg/conf/config.%s.yaml", env))
 	err = viper.ReadInConfig()
 	if err != nil {

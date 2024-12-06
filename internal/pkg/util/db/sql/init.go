@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"database/sql"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	env "github.com/spf13/viper"
@@ -11,11 +12,12 @@ import (
 )
 
 var Db *gorm.DB
+var SqlDB *sql.DB
 
 func Init() {
 	envMysql := env.GetStringMapString("MySQL")
 	dsn := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&multiStatements=true&loc=Local",
 		envMysql["user"],
 		envMysql["password"],
 		envMysql["host"],
@@ -34,15 +36,15 @@ func connectDB(dsn string) *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	sqlDB, err := db.DB()
+	SqlDB, err = db.DB()
 	if err != nil {
 		panic(err)
 	}
 	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
-	sqlDB.SetMaxIdleConns(10)
+	SqlDB.SetMaxIdleConns(10)
 	// SetMaxOpenConns sets the maximum number of open connections to the database.
-	sqlDB.SetMaxOpenConns(100)
+	SqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
-	sqlDB.SetConnMaxLifetime(time.Hour)
+	SqlDB.SetConnMaxLifetime(time.Hour)
 	return db
 }

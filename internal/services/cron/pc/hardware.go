@@ -1,13 +1,8 @@
 package pc
 
-import (
-	"beautyProject/internal/pkg/enum"
-	"beautyProject/internal/pkg/repository"
-)
-
 type Hardware struct {
 }
 
-func (h *Hardware) Analyze(hardware *enum.Hardware, key string, value string, headers map[string]string, minutes int, repo repository.StatusRecord) {
-
+func (h *Hardware) Analyze() {
+	//todo 用go 將資料撈出來 整理 放回去
 }

@@ -57,7 +57,6 @@ func run(cmd *cobra.Command, args []string) {
 
 	// 獲取該方法的參數數量
 	numParams := method.Type().NumIn()
-
 	// 如果傳入的參數數量與方法要求的數量相匹配
 	if numParams == len(parameters) {
 		// 構建反射所需的參數

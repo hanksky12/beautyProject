@@ -12,9 +12,9 @@ import (
 
 func Run() {
 	var wg sync.WaitGroup
-	handler := &ConsumeHandler{}
+
 	consumers := make([]*kafkaUtil.Consumer, 0, len(kafkaUtil.KafkaConf.Topics))
-	consumers = start(handler, consumers, wg)
+	consumers = start(consumers, wg)
 	waitShuttingDown()
 	stop(consumers)
 	wg.Wait()
@@ -22,10 +22,11 @@ func Run() {
 
 }
 
-func start(handler *ConsumeHandler, consumers []*kafkaUtil.Consumer, wg sync.WaitGroup) []*kafkaUtil.Consumer {
+func start(consumers []*kafkaUtil.Consumer, wg sync.WaitGroup) []*kafkaUtil.Consumer {
 	for _, minutes := range []int{1, 2} {
 		callback := controller.Callback{Minutes: minutes}
 		for _, topic := range kafkaUtil.KafkaConf.Topics {
+			handler := &ConsumeHandler{}
 			handler.SetHandle(topic.Name, callback)
 			groupID := fmt.Sprintf("min_%d", minutes)
 			for i := 0; i < topic.Partition; i++ {
