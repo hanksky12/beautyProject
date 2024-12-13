@@ -12,23 +12,19 @@ type AddJob struct{}
 func (j *AddJob) InProduction(scheduler *gocron.Scheduler) {
 	job := &controller.Job{}
 
-	_, err := scheduler.CronWithSeconds("0 * * * * *").Do(job.Test, "hk")
-	log.PrintCron(err)
-
-	// 上傳圖片，每分鐘的第 20 秒和第 50 秒執行
-	_, err = scheduler.CronWithSeconds("20,50 * * * * *").Do(job.Test)
+	_, err := scheduler.CronWithSeconds("20,50 * * * * *").Do(job.AnalyzeTask)
 	log.PrintCron(err)
 }
 
 func (j *AddJob) InOther(scheduler *gocron.Scheduler) {
 	job := &controller.Job{}
-
-	// 上傳圖片，每分鐘的第 0 秒執行
-	_, err := scheduler.CronWithSeconds("0 * * * * *").Do(job.Test, "hk")
+	// 每5秒執行一次
+	_, err := scheduler.CronWithSeconds("*/5 * * * * *").Do(job.AnalyzeTask)
 	log.PrintCron(err)
 
-	_, err = scheduler.CronWithSeconds("20,50 * * * * *").Do(job.Test)
+	_, err = scheduler.CronWithSeconds("0 * * * * *").Do(job.Test, "test")
 	log.PrintCron(err)
+
 }
 
 func Run() {
