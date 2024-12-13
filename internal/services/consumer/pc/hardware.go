@@ -5,6 +5,7 @@ import (
 	"beautyProject/internal/pkg/enum"
 	"beautyProject/internal/pkg/model"
 	"beautyProject/internal/pkg/repository"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"strconv"
 )
@@ -12,10 +13,12 @@ import (
 type Hardware struct {
 }
 
-func (h *Hardware) Record(hardware *enum.Hardware, key string, value string, headers map[string]string, minutes int, repo repository.StatusRecord) {
-	//log.Info(minutes)
-	//log.Info(key, value)
-	//log.Info(headers)
+func (h *Hardware) Record(hardware *enum.Hardware,
+	value string,
+	headers map[string]string,
+	isRaw bool,
+	repo repository.StatusRecord,
+	repoRaw repository.StatusRecordRaw) {
 	log.Infof("%s is working...", hardware.Name)
 	var err error
 	percent, err := strconv.ParseFloat(value, 64)
@@ -32,16 +35,29 @@ func (h *Hardware) Record(hardware *enum.Hardware, key string, value string, hea
 		log.Error(err)
 	}
 	userId := uint(userIDUint)
-	record := &model.StatusRecord{
-		UserId:     userId,
-		HardwareId: hardwareId,
-		Percent:    percent,
-		Time:       time,
-		Min:        minutes}
-	err = repo.Add(record)
+	if isRaw {
+		record := &model.StatusRecordRaw{
+			UserId:     userId,
+			HardwareId: hardwareId,
+			Percent:    percent,
+			Time:       time}
+		err = repoRaw.Add(record)
+	} else {
+		percent, err = strconv.ParseFloat(fmt.Sprintf("%.1f", percent), 64)
+		if err != nil {
+			log.Error(err)
+		}
+		record := &model.StatusRecord{
+			UserId:     userId,
+			HardwareId: hardwareId,
+			Percent:    percent,
+			Time:       time,
+			Processed:  false,
+		}
+		err = repo.Add(record)
+	}
 	if err != nil {
 		msg := dto.Msg{Success: false, Message: "寫入失敗"}
 		log.Infof("%v", msg)
-		//todo something
 	}
 }

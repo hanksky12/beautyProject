@@ -8,7 +8,7 @@ import (
 )
 
 type Callback struct {
-	Minutes int
+	IsRaw bool
 }
 
 func (c *Callback) CpuRecord(key string, value string, headers map[string]string) {
@@ -27,6 +27,7 @@ func (c *Callback) RecordTask(hardware *enum.Hardware, key string, value string,
 	log.Info("RecordTask")
 	log.Info(hardware.Name)
 	repo := repository.StatusRecord{}
+	repoRaw := repository.StatusRecordRaw{}
 	pc := pc.Hardware{}
-	pc.Record(hardware, key, value, headers, c.Minutes, repo)
+	pc.Record(hardware, value, headers, c.IsRaw, repo, repoRaw)
 }

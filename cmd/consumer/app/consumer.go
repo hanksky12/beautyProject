@@ -23,12 +23,12 @@ func Run() {
 }
 
 func start(consumers []*kafkaUtil.Consumer, wg sync.WaitGroup) []*kafkaUtil.Consumer {
-	for _, minutes := range []int{1, 2} {
-		callback := controller.Callback{Minutes: minutes}
+	for _, isRaw := range []bool{true, false} {
+		callback := controller.Callback{IsRaw: isRaw}
 		for _, topic := range kafkaUtil.KafkaConf.Topics {
 			handler := &ConsumeHandler{}
 			handler.SetHandle(topic.Name, callback)
-			groupID := fmt.Sprintf("min_%d", minutes)
+			groupID := fmt.Sprintf("raw_%v", isRaw)
 			for i := 0; i < topic.Partition; i++ {
 				consumer := kafkaUtil.CreateConsumer(topic.Name, groupID, &wg)
 				log.Infof("Consumer created [topic]: %s, [groupID]: %s number %d", topic.Name, groupID, i)
