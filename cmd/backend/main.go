@@ -2,14 +2,22 @@ package main
 
 import (
 	"beautyProject/cmd/backend/app"
+	"beautyProject/internal/pkg/util/app/initApp"
 	"beautyProject/internal/pkg/util/app/initApp/initAfterApp"
 	"beautyProject/internal/pkg/util/app/initApp/initBeforeApp"
 )
 
 func main() {
-	initBeforeApp.Run("log/router.log", true)
+	options := &initApp.Options{
+		KafkaOptions: &initApp.KafkaOptions{
+			IsKafka:        true,
+			IsCreateWriter: true,
+		},
+		LogOptions: &initApp.LogOptions{
+			FilePath: "log/router.log",
+		},
+	}
+	initBeforeApp.Run(options)
 	app.Run()
-	initAfterApp.Run(true)
+	initAfterApp.Run(options)
 }
-
-//sql.Db.AutoMigrate(&model.User{}) //todo delete

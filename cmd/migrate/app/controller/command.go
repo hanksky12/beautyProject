@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"beautyProject/internal/pkg/util/app/initApp/initBeforeApp"
 	"beautyProject/internal/pkg/util/db/sql"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/mysql"
@@ -14,7 +13,6 @@ import (
 type Command struct{}
 
 func (j *Command) Run(command string, stepsOrVersion string) {
-	initBeforeApp.Run("log/migrate.log", false)
 	driver, err := mysql.WithInstance(sql.SqlDB, &mysql.Config{})
 	if err != nil {
 		log.Fatalf("Failed to create MySQL driver for migrations: %v", err)
