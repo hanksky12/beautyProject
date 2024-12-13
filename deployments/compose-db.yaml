@@ -1,0 +1,22 @@
+version: '1'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    healthcheck:
+      test: [ 'CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password="my-secret-pw" --silent' ]
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    ports:
+      - "3316:3306"
+    volumes:
+      - sqldata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: beauty
+
+volumes:
+  sqldata:
+    driver: local
