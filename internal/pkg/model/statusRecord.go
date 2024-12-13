@@ -6,5 +6,13 @@ type StatusRecord struct {
 	HardwareId uint
 	Percent    float64
 	Time       int64
-	Min        int
+	Processed  bool
+}
+
+type MiniStatusRecord struct {
+	ID         uint
+	UserId     uint
+	HardwareId uint
+	Percent    float64
+	Time       int64
 }

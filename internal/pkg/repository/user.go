@@ -26,3 +26,9 @@ func (u *User) Add(user *model.User) error {
 func (u *User) Remove(id int) {
 	sql.Db.Delete(&model.User{}, id)
 }
+
+func (u *User) FindAll() []model.User {
+	var users []model.User
+	sql.Db.Find(&users)
+	return users
+}
