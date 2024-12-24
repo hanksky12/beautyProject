@@ -37,6 +37,22 @@ func ProcessMsgDto(c *gin.Context, msg dto.Msg) {
 	}
 }
 
+func ProcessTableDto(c *gin.Context, table dto.Table) {
+	if table.Success == true {
+		SuccessTable(c, table.DataList, table.Total)
+	} else {
+		FailedTable(c, table.Message)
+	}
+}
+
+func SuccessTable(c *gin.Context, dataList []map[string]any, total int) {
+	base(c, dto.Response{Code: http.StatusOK, Message: "請求成功", Data: dataList, Total: total})
+}
+
+func FailedTable(c *gin.Context, message string) {
+	base(c, dto.Response{Code: http.StatusCreated, Message: message, Data: []map[string]any{}, Total: 0})
+}
+
 func base(c *gin.Context, response dto.Response) {
 	c.JSON(http.StatusOK, response)
 }
