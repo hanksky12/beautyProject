@@ -12,65 +12,97 @@ import (
 	"time"
 )
 
+var enumHardware = []*enum.Hardware{enum.Cpu, enum.Disk, enum.Memory}
+
 type Hardware struct {
 	AverageRow        int // 平均多少筆資料做一次分析
 	RecordRepo        *repository.StatusRecord
 	RecordAverageRepo *repository.StatusRecordAverage
+	RecordQueryRepo   *repository.StatusRecordQuery
 	UserRepo          *repository.User
 }
 
 func (h *Hardware) Analyze() {
 	defer timeUtils.TrackExecutionTime("Analyze", time.Now())
-	users := h.UserRepo.FindAll()
-	var wg = &sync.WaitGroup{}
-	for _, user := range users {
-		h.handleSingleUser(user, wg)
-	}
-	wg.Wait()
-}
-
-func (h *Hardware) handleSingleUser(user model.User, wg *sync.WaitGroup) {
-	log.Infof("處理單一 User資料: %s", user.Name)
-	for _, hardware := range []*enum.Hardware{enum.Cpu, enum.Disk, enum.Memory} {
-		wg.Add(1)
-		go h.handleSingleHardware(hardware, user, wg)
-	}
-}
-
-func (h *Hardware) handleSingleHardware(hardware *enum.Hardware, user model.User, wg *sync.WaitGroup) {
-	defer wg.Done()
-	log.Infof("處理User資料: %s 硬體資料: %s", user.Name, hardware.Name)
-	records, err := h.RecordRepo.FindByUserAndHardware(user.ID, hardware.Number, 500)
+	records, err := h.RecordQueryRepo.FindByNoProcessedWithUser(5000)
 	if err != nil {
 		log.Error("查詢失敗", err)
 		return
 	}
 	if len(records) == 0 {
-		log.Infof("%s 無資料", hardware.Name)
+		log.Info("無資料")
 		return
 	}
+	userMap := h.splitStatusRecordByUser(records)
+	var wg = &sync.WaitGroup{}
+	for userID, statusRecords := range userMap {
+		//user 一定有資料
+		wg.Add(1)
+		go h.handleSingleUser(userID, statusRecords, wg)
+	}
+	wg.Wait()
+}
+
+func (h *Hardware) splitStatusRecordByUser(records []repository.StatusRecordWithUser) map[uint][]repository.StatusRecordWithUser {
+	userMap := make(map[uint][]repository.StatusRecordWithUser)
+	for _, record := range records {
+		userMap[record.UserId] = append(userMap[record.UserId], record)
+	}
+	return userMap
+}
+
+func (h *Hardware) handleSingleUser(userID uint, records []repository.StatusRecordWithUser, wg *sync.WaitGroup) {
+	defer wg.Done()
+	logger := log.WithFields(log.Fields{"userID": userID})
+	logger.Infof("處理單一User資料: %s", userID)
+	var userWg = &sync.WaitGroup{}
+	for _, hardware := range enumHardware {
+		hardwareRecords := h.getHardwareRecord(records, hardware)
+		if len(hardwareRecords) == 0 {
+			logger.Infof("無%s資料", hardware.Name)
+			continue
+		}
+		userWg.Add(1)
+		go h.handleSingleHardware(hardware, userID, userWg, hardwareRecords, logger)
+	}
+	userWg.Wait()
+}
+
+func (h *Hardware) getHardwareRecord(records []repository.StatusRecordWithUser, hardware *enum.Hardware) []repository.StatusRecordWithUser {
+	partRecords := make([]repository.StatusRecordWithUser, 0)
+	for _, record := range records {
+		if record.HardwareId == uint(hardware.Number) {
+			partRecords = append(partRecords, record)
+		}
+	}
+	return partRecords
+}
+
+func (h *Hardware) handleSingleHardware(hardware *enum.Hardware, userID uint, userWg *sync.WaitGroup, records []repository.StatusRecordWithUser, logger *log.Entry) {
+	defer userWg.Done()
+	logger = logger.WithFields(log.Fields{"hardwareName": hardware.Name})
 	lengthRows := len(records)
-	log.Infof("資料總筆數: %v ", lengthRows)
-	var wgAverage = &sync.WaitGroup{}
+	logger.Infof("筆數: %v ", lengthRows)
+	var averageWg = &sync.WaitGroup{}
 	for index := 0; index < lengthRows; index += h.AverageRow {
 		endIndex := index + h.AverageRow
 		strData := fmt.Sprintf("處理第%v到%v筆資料", index, endIndex)
-		log.Info("開始", strData)
+		logger.Info("開始", strData)
 		if endIndex > lengthRows {
-			wgAverage.Add(1)
-			go h.computeAverage(hardware, user, records[index:], wgAverage, strData)
+			averageWg.Add(1)
+			go h.computeAverage(hardware, userID, records[index:], averageWg, strData, logger)
 			break
 		}
-		wgAverage.Add(1)
-		go h.computeAverage(hardware, user, records[index:endIndex], wgAverage, strData)
+		averageWg.Add(1)
+		go h.computeAverage(hardware, userID, records[index:endIndex], averageWg, strData, logger)
 	}
-	wgAverage.Wait()
+	averageWg.Wait()
 }
 
-func (h *Hardware) computeAverage(hardware *enum.Hardware, user model.User, partRecords []model.MiniStatusRecord, wgAverage *sync.WaitGroup, strData string) {
-	defer wgAverage.Done()
+func (h *Hardware) computeAverage(hardware *enum.Hardware, userID uint, partRecords []repository.StatusRecordWithUser, averageWg *sync.WaitGroup, strData string, logger *log.Entry) {
+	defer averageWg.Done()
 	record := &model.StatusRecordAverage{
-		UserId:     user.ID,
+		UserId:     userID,
 		HardwareId: uint(hardware.Number),
 		Percent:    h.getAveragePercent(partRecords),
 		Time:       partRecords[0].Time,
@@ -78,12 +110,12 @@ func (h *Hardware) computeAverage(hardware *enum.Hardware, user model.User, part
 	ids := h.getIds(partRecords)
 	err := h.updateTables(ids, record)
 	if err != nil {
-		log.Error(strData, "=>更新失敗=>", err)
+		logger.Error(strData, "=>更新失敗=>", err)
 	}
-	log.Info(strData, "=>更新完成")
+	logger.Info(strData, "=>更新完成")
 }
 
-func (h *Hardware) getAveragePercent(partRecords []model.MiniStatusRecord) float64 {
+func (h *Hardware) getAveragePercent(partRecords []repository.StatusRecordWithUser) float64 {
 	var total float64
 	for _, record := range partRecords {
 		total += record.Percent
@@ -91,10 +123,10 @@ func (h *Hardware) getAveragePercent(partRecords []model.MiniStatusRecord) float
 	return total / float64(len(partRecords))
 }
 
-func (h *Hardware) getIds(partRecords []model.MiniStatusRecord) []int {
+func (h *Hardware) getIds(partRecords []repository.StatusRecordWithUser) []int {
 	ids := make([]int, len(partRecords))
 	for i, record := range partRecords {
-		ids[i] = int(record.ID)
+		ids[i] = int(record.UserId)
 	}
 	return ids
 }

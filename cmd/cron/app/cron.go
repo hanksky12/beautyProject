@@ -22,8 +22,8 @@ func (j *AddJob) InOther(scheduler *gocron.Scheduler) {
 	_, err := scheduler.CronWithSeconds("*/5 * * * * *").Do(job.AnalyzeTask)
 	log.PrintCron(err)
 
-	_, err = scheduler.CronWithSeconds("0 * * * * *").Do(job.Test, "test")
-	log.PrintCron(err)
+	//_, err = scheduler.CronWithSeconds("0 * * * * *").Do(job.Test, "test")
+	//log.PrintCron(err)
 
 }
 

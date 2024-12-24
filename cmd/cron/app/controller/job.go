@@ -13,10 +13,12 @@ func (j *Job) AnalyzeTask() {
 	userRepo := &repository.User{}
 	recordRepo := &repository.StatusRecord{}
 	recordAverageRepo := &repository.StatusRecordAverage{}
+	recordQueryRepo := &repository.StatusRecordQuery{}
 	h := pc.Hardware{
 		AverageRow:        5,
 		RecordRepo:        recordRepo,
 		RecordAverageRepo: recordAverageRepo,
+		RecordQueryRepo:   recordQueryRepo,
 		UserRepo:          userRepo}
 	h.Analyze()
 }

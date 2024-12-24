@@ -11,14 +11,11 @@ import (
 )
 
 type Hardware struct {
+	RecordRepo    *repository.StatusRecord
+	RecordRepoRaw *repository.StatusRecordRaw
 }
 
-func (h *Hardware) Record(hardware *enum.Hardware,
-	value string,
-	headers map[string]string,
-	isRaw bool,
-	repo repository.StatusRecord,
-	repoRaw repository.StatusRecordRaw) {
+func (h *Hardware) Record(hardware *enum.Hardware, value string, headers map[string]string, isRaw bool) {
 	log.Infof("%s is working...", hardware.Name)
 	var err error
 	percent, err := strconv.ParseFloat(value, 64)
@@ -41,7 +38,7 @@ func (h *Hardware) Record(hardware *enum.Hardware,
 			HardwareId: hardwareId,
 			Percent:    percent,
 			Time:       time}
-		err = repoRaw.Add(record)
+		err = h.RecordRepoRaw.Add(record)
 	} else {
 		percent, err = strconv.ParseFloat(fmt.Sprintf("%.1f", percent), 64)
 		if err != nil {
@@ -54,7 +51,7 @@ func (h *Hardware) Record(hardware *enum.Hardware,
 			Time:       time,
 			Processed:  false,
 		}
-		err = repo.Add(record)
+		err = h.RecordRepo.Add(record)
 	}
 	if err != nil {
 		msg := dto.Msg{Success: false, Message: "寫入失敗"}

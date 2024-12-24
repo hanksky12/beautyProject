@@ -26,8 +26,8 @@ func (c *Callback) MemRecord(key string, value string, headers map[string]string
 func (c *Callback) RecordTask(hardware *enum.Hardware, key string, value string, headers map[string]string) {
 	log.Info("RecordTask")
 	log.Info(hardware.Name)
-	repo := repository.StatusRecord{}
-	repoRaw := repository.StatusRecordRaw{}
-	pc := pc.Hardware{}
-	pc.Record(hardware, value, headers, c.IsRaw, repo, repoRaw)
+	repo := &repository.StatusRecord{}
+	repoRaw := &repository.StatusRecordRaw{}
+	pc := pc.Hardware{RecordRepo: repo, RecordRepoRaw: repoRaw}
+	pc.Record(hardware, value, headers, c.IsRaw)
 }
