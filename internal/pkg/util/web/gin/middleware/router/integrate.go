@@ -13,7 +13,7 @@ func Integrate[T any](handlerFunc func(*gin.Context, T), isAuth bool) gin.Handle
 			return
 		}
 		userIP := c.ClientIP()
-		log.Infof("[start] user_id:%v user_ip:%v", userID, userIP)
+		log.Infof("user_id:%v user_ip:%v", userID, userIP)
 		validator(handlerFunc)(c)
 	}
 }
