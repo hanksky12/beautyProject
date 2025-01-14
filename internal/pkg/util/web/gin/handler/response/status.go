@@ -21,8 +21,8 @@ func Unauthorized(c *gin.Context) {
 	base(c, dto.Response{Code: http.StatusUnauthorized, Message: "Unauthorized"})
 }
 
-func Error(c *gin.Context, err error) {
-	base(c, dto.Response{Code: http.StatusBadRequest, Message: err.Error()})
+func Error(c *gin.Context, err string) {
+	base(c, dto.Response{Code: http.StatusBadRequest, Message: err})
 }
 
 func Panic(c *gin.Context) {
@@ -39,7 +39,7 @@ func ProcessMsgDto(c *gin.Context, msg dto.Msg) {
 
 func ProcessTableDto(c *gin.Context, table dto.Table) {
 	if table.Success == true {
-		SuccessTable(c, table.DataList, table.Total)
+		SuccessTable(c, table.DataArray, table.Total)
 	} else {
 		FailedTable(c, table.Message)
 	}
