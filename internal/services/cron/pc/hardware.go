@@ -4,6 +4,7 @@ import (
 	"beautyProject/internal/pkg/enum"
 	"beautyProject/internal/pkg/model"
 	"beautyProject/internal/pkg/repository"
+	"beautyProject/internal/pkg/util/db/sql"
 	timeUtils "beautyProject/internal/pkg/util/time"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -132,7 +133,7 @@ func (h *Hardware) getIds(partRecords []repository.StatusRecordWithUser) []int {
 }
 
 func (h *Hardware) updateTables(ids []int, averageRecord *model.StatusRecordAverage) error {
-	return repository.RunTransaction(func(tx *gorm.DB) error {
+	return sql.RunTransaction(func(tx *gorm.DB) error {
 		// 更新 StatusRecord
 		if err := h.RecordRepo.UpdateProcessed(tx, ids); err != nil {
 			return err

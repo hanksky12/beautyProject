@@ -7,5 +7,7 @@ import (
 
 func AddRoutes(rg *gin.RouterGroup) {
 	handler := Handler{}
-	rg.POST("/status/", router.Integrate(handler.RecordHardware, true))
+	rg.POST("/status", router.Integrate(handler.RecordHardware, true))
+	rg.GET("/info", router.Integrate(handler.HardwareInfo, true))
+
 }

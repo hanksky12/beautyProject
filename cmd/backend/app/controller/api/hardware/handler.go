@@ -5,17 +5,18 @@ import (
 	"beautyProject/internal/pkg/enum"
 	"beautyProject/internal/pkg/util/web/gin/handler/response"
 	"beautyProject/internal/pkg/web/request"
-	"beautyProject/internal/services/backend/pc"
-	"beautyProject/internal/services/backend/pc/base"
+	"beautyProject/internal/services/backend/hardware/info"
+	"beautyProject/internal/services/backend/hardware/record"
+	"beautyProject/internal/services/backend/hardware/record/base"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
 
 type Handler struct{}
 
-func (h *Handler) RecordHardware(c *gin.Context, req request.HardwareReq) {
+func (handler *Handler) RecordHardware(c *gin.Context, req request.HardwareReq) {
 	userId := strconv.FormatUint(uint64(c.GetUint("userId")), 10)
-	recorder := base.NewRecorder(h.getHardware(req), userId)
+	recorder := base.NewRecorder(handler.getHardware(req), userId)
 	recorder.Initialize()
 	var msgDto dto.Msg
 	switch req.State {
@@ -29,14 +30,20 @@ func (h *Handler) RecordHardware(c *gin.Context, req request.HardwareReq) {
 	response.ProcessMsgDto(c, msgDto)
 }
 
-func (h *Handler) getHardware(req request.HardwareReq) base.WorkAndName {
+func (handler *Handler) HardwareInfo(c *gin.Context, req request.EmptyReq) {
+	hardware := &info.HardwareInfo{}
+	tableDto := hardware.Query()
+	response.ProcessTableDto(c, tableDto)
+}
+
+func (handler *Handler) getHardware(req request.HardwareReq) base.WorkAndName {
 	switch req.Hardware {
 	case enum.Cpu.Name:
-		return &pc.Cpu{}
+		return &record.Cpu{}
 	case enum.Disk.Name:
-		return &pc.Disk{}
+		return &record.Disk{}
 	case enum.Memory.Name:
-		return &pc.Memory{}
+		return &record.Memory{}
 	}
 	return nil
 }

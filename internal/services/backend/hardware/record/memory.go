@@ -1,28 +1,28 @@
-package pc
+package record
 
 import (
 	"beautyProject/internal/pkg/enum"
 	"beautyProject/internal/pkg/util/mq/kafkaUtil"
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/mem"
 	log "github.com/sirupsen/logrus"
 	"strconv"
 	"time"
 )
 
-type Cpu struct {
+type Memory struct {
 }
 
-func (c *Cpu) Work(userId string) {
-	log.Info("CpuWork is working...")
-	percent, _ := cpu.Percent(time.Second, false)
-	strPercent := strconv.FormatFloat(percent[0], 'f', -1, 64)
-	message := fmt.Sprintf("CpuWork percent: %v", strPercent)
+func (m *Memory) Work(userId string) {
+	log.Info("MemoryWork is working...")
+	memInfo, _ := mem.VirtualMemory()
+	strPercent := strconv.FormatFloat(memInfo.UsedPercent, 'f', -1, 64)
+	message := fmt.Sprintf("MemoryWork percent: %v", strPercent)
 	log.Info(message)
 	strTime := strconv.FormatInt(time.Now().Unix(), 10)
 	ok := kafkaUtil.Produce(
-		enum.Cpu.Name,
+		enum.Memory.Name,
 		kafka.Message{
 			//Key:   []byte(userId),
 			Value: []byte(strPercent),
@@ -38,10 +38,10 @@ func (c *Cpu) Work(userId string) {
 			},
 		})
 	if !ok {
-		log.Panic("CpuWork send message failed")
+		log.Panic("MemoryWork send message failed")
 	}
 }
 
-func (c *Cpu) Name() string {
-	return "cpu"
+func (m *Memory) Name() string {
+	return "memory"
 }

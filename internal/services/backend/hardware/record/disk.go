@@ -1,28 +1,29 @@
-package pc
+package record
 
 import (
 	"beautyProject/internal/pkg/enum"
 	"beautyProject/internal/pkg/util/mq/kafkaUtil"
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"github.com/shirou/gopsutil/mem"
+	"github.com/shirou/gopsutil/disk"
 	log "github.com/sirupsen/logrus"
 	"strconv"
 	"time"
 )
 
-type Memory struct {
+type Disk struct {
 }
 
-func (m *Memory) Work(userId string) {
-	log.Info("MemoryWork is working...")
-	memInfo, _ := mem.VirtualMemory()
-	strPercent := strconv.FormatFloat(memInfo.UsedPercent, 'f', -1, 64)
-	message := fmt.Sprintf("MemoryWork percent: %v", strPercent)
+func (d *Disk) Work(userId string) {
+	log.Info("DiskWork is working...")
+	parts, _ := disk.Partitions(true)
+	diskInfo, _ := disk.Usage(parts[0].Mountpoint)
+	strPercent := strconv.FormatFloat(diskInfo.UsedPercent, 'f', -1, 64)
+	message := fmt.Sprintf("DiskWork percent: %v", strPercent)
 	log.Info(message)
 	strTime := strconv.FormatInt(time.Now().Unix(), 10)
 	ok := kafkaUtil.Produce(
-		enum.Memory.Name,
+		enum.Disk.Name,
 		kafka.Message{
 			//Key:   []byte(userId),
 			Value: []byte(strPercent),
@@ -38,10 +39,10 @@ func (m *Memory) Work(userId string) {
 			},
 		})
 	if !ok {
-		log.Panic("MemoryWork send message failed")
+		log.Panic("DiskWork send message failed")
 	}
 }
 
-func (m *Memory) Name() string {
-	return "memory"
+func (d *Disk) Name() string {
+	return "disk"
 }

@@ -7,5 +7,5 @@ import (
 
 func AddRoutes(rg *gin.RouterGroup) {
 	handler := Handler{}
-	rg.GET("/info", router.Integrate(handler.Record, true))
+	rg.GET("/info", router.Integrate(handler.RecordInfo, true))
 }
