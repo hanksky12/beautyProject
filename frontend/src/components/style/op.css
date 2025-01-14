@@ -1,0 +1,17 @@
+
+
+.op {
+  text-align: center;
+  padding: 5px 0;
+  background-color: rgba(255, 165, 149, 0.99);
+  color: #efe1e1;
+}
+
+.op h1 {
+  font-size: 2.5rem;
+  margin-bottom: 5px;
+}
+
+.op p {
+  font-size: 1.2rem;
+}

@@ -1,0 +1,17 @@
+
+
+.query {
+  text-align: center;
+  padding: 5px 0;
+  background-color: rgba(255, 149, 149, 0.99);
+  color: #efe1e1;
+}
+
+.query h1 {
+  font-size: 2.5rem;
+  margin-bottom: 5px;
+}
+
+.query p {
+  font-size: 1.2rem;
+}
