@@ -1,5 +1,5 @@
 ## 後端(生產者)
-api server (produce pc status)
+api server (produce pc status)(query pc status)
 ## 消費者
 consumer (record pc status)
 ## 定期
