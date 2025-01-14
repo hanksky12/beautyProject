@@ -1,8 +1,8 @@
 package request
 
 type PagingReq struct {
-	PerPage   int    `json:"per_page" binding:"required"`
-	Page      int    `json:"page" binding:"required"`
-	Sort      string `json:"sort" binding:"required,oneof=cpu memory disk"`
-	SortOrder string `json:"sort_order" binding:"required,oneof=asc desc"`
+	PerPage   int    `form:"per_page" binding:"required"`
+	Page      int    `form:"page" binding:"required"`
+	Sort      string `form:"sort" binding:"sortValidations"`
+	SortOrder string `form:"sortOrder" binding:"required,oneof=asc desc"`
 }
