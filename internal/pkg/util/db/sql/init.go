@@ -32,7 +32,10 @@ func Init() {
 func connectDB(dsn string) *gorm.DB {
 	db, err := gorm.Open(
 		mysql.Open(dsn),
-		&gorm.Config{NamingStrategy: schema.NamingStrategy{SingularTable: true}})
+		&gorm.Config{
+			NamingStrategy: schema.NamingStrategy{SingularTable: true},
+			DryRun:         false},
+	)
 	if err != nil {
 		panic(err)
 	}
