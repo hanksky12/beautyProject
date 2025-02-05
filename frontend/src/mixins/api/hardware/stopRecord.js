@@ -8,7 +8,7 @@ export const StopRecordApiMixin = {
                 "method": "post",
                 "body": {
                     "state": "stop",
-                    "hardware": selections[0].name,
+                    "hardware": selections[0].hardware_name,
                 }
             }
             await this.sendRequestToPostProcessing(requestData, false)

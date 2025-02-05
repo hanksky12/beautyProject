@@ -20,10 +20,10 @@ type StatusRecordWithUser struct {
 func (r *StatusRecordQuery) FindByNoProcessedWithUser(limit int) ([]StatusRecordWithUser, error) {
 	var results []StatusRecordWithUser
 	err := sql.Db.Model(&model.StatusRecord{}).
-		Select("status_records.id as status_record_id, status_records.user_id, status_records.hardware_id, status_records.percent, status_records.time, status_records.processed").
-		Joins("JOIN users ON status_records.user_id = users.id").
-		Where("status_records.processed = ?", false).
-		Order("status_records.time").
+		Select("status_record.id as status_record_id, status_record.user_id, status_record.hardware_id, status_record.percent, status_record.time, status_record.processed").
+		Joins("JOIN user ON status_record.user_id = user.id").
+		Where("status_record.processed = ?", false).
+		Order("status_record.time").
 		Limit(limit).
 		Scan(&results).Error
 	return results, err
