@@ -7,5 +7,6 @@ import (
 
 func AddRoutes(rg *gin.RouterGroup) {
 	handler := Handler{}
-	rg.GET("/info", router.Integrate(handler.RecordInfo, true))
+	rg.GET("/average-info", router.Integrate(handler.AverageRecordInfo, true))
+	rg.GET("/raw-info", router.Integrate(handler.RawRecordInfo, true)) // 新增原始紀錄路由
 }

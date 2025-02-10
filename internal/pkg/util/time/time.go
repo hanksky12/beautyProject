@@ -55,3 +55,25 @@ func GetTimeStamp(timeStr string, param DefaultParams) int64 {
 	return t.Unix()
 
 }
+
+type key struct {
+	Date     string
+	Time     string
+	DateTime string
+}
+
+var keyArray = [2]key{
+	{Date: "MaxDate", Time: "MaxTime", DateTime: "MaxDateTime"},
+	{Date: "MinDate", Time: "MinTime", DateTime: "MinDateTime"},
+}
+
+func CombineKeyDateTime(conditions map[string]any) {
+	for _, key := range keyArray {
+		if _, exists := conditions[key.Date]; exists {
+			strDate := conditions[key.Date].(string) + " " + conditions[key.Time].(string)
+			conditions[key.DateTime] = GetTimeStamp(strDate, GetDefaultParams())
+			delete(conditions, key.Date)
+			delete(conditions, key.Time)
+		}
+	}
+}
