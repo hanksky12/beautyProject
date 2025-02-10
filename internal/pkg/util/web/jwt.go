@@ -16,7 +16,11 @@ type Claims struct {
 
 const CookieName = "token"
 
-func SetJwtCookie(c *gin.Context, userId uint) error {
+type Jwt struct {
+	GinContext *gin.Context
+}
+
+func (j *Jwt) SetCookie(userId uint) error {
 	log.Info("SetJwtCookie Start")
 	var envJwt = env.GetStringMapString("Jwt")
 	minutes, err := strconv.Atoi(envJwt["access_token_expires"])
@@ -37,26 +41,26 @@ func SetJwtCookie(c *gin.Context, userId uint) error {
 	if err != nil {
 		return err
 	}
-	c.SetCookie(CookieName, tokenString, int(expirationTime.Sub(time.Now()).Seconds()), "/", "localhost", false, true)
+	j.GinContext.SetCookie(CookieName, tokenString, int(expirationTime.Sub(time.Now()).Seconds()), "/", "localhost", false, true)
 	log.Info("SetJwtCookie Success")
 	return nil
 }
 
-func UnsetJwtCookie(c *gin.Context) {
-	c.SetCookie(CookieName, "", -1, "/", "localhost", false, true)
+func (j *Jwt) UnsetCookie() {
+	j.GinContext.SetCookie(CookieName, "", -1, "/", "localhost", false, true)
 }
 
-func GetJwtToken(c *gin.Context) (string, error) {
-	tokenString, err := c.Cookie(CookieName)
+func (j *Jwt) GetToken() (string, error) {
+	tokenString, err := j.GinContext.Cookie(CookieName)
 	if err != nil {
 		return "", err
 	}
 	return tokenString, nil
 }
 
-func ParseJwt(tokenstring string) (*Claims, error) {
+func (j *Jwt) Parse(tokenStr string) (*Claims, error) {
 	var envJwt = env.GetStringMapString("Jwt")
-	token, err := jwt.ParseWithClaims(tokenstring, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(envJwt["secret_key"]), nil
 	})
 

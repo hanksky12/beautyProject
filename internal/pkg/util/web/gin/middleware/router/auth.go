@@ -11,13 +11,14 @@ func auth(c *gin.Context, isAuth bool) (bool, string) {
 	if !isAuth {
 		return true, ""
 	}
-	tokenString, err := web.GetJwtToken(c)
+	jwt := web.Jwt{GinContext: c}
+	tokenString, err := jwt.GetToken()
 	if err != nil {
 		response.Unauthorized(c)
 		c.Abort()
 		return false, ""
 	}
-	claims, err := web.ParseJwt(tokenString)
+	claims, err := jwt.Parse(tokenString)
 	if err != nil {
 		response.Unauthorized(c)
 		c.Abort()

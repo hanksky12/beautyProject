@@ -2,19 +2,18 @@ package user
 
 import (
 	"beautyProject/internal/pkg/dto"
+	"beautyProject/internal/pkg/interfaces"
 	"beautyProject/internal/pkg/model"
-	"beautyProject/internal/pkg/repository"
 	"beautyProject/internal/pkg/util/str"
 	"beautyProject/internal/pkg/util/web"
 	"beautyProject/internal/pkg/web/request"
-	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
 type User struct {
 }
 
-func (u *User) Register(c *gin.Context, userRepo repository.User, req request.UserReq) dto.Msg {
+func (u *User) Register(jwt interfaces.ISetCookie, userRepo interfaces.IRepoUser, req request.UserReq) dto.Msg {
 	//panic("no value for $USER")
 	user, isFind := userRepo.FindByName(req.UserName)
 	if isFind == true {
@@ -29,7 +28,7 @@ func (u *User) Register(c *gin.Context, userRepo repository.User, req request.Us
 		log.Infof("%v", msg)
 		return msg
 	}
-	err = web.SetJwtCookie(c, user.ID)
+	err = jwt.SetCookie(user.ID)
 	if err != nil {
 		msg := dto.Msg{Success: false, Message: "設定cookie失敗"}
 		log.Infof("%v", msg)
@@ -41,7 +40,7 @@ func (u *User) Register(c *gin.Context, userRepo repository.User, req request.Us
 
 }
 
-func (u *User) Login(c *gin.Context, userRepo repository.User, req request.UserReq) dto.Msg {
+func (u *User) Login(jwt interfaces.ISetCookie, userRepo interfaces.IRepoUser, req request.UserReq) dto.Msg {
 	user, isFind := userRepo.FindByName(req.UserName)
 	if isFind == false {
 		msg := dto.Msg{Success: false, Message: "用戶未註冊"}
@@ -53,8 +52,9 @@ func (u *User) Login(c *gin.Context, userRepo repository.User, req request.UserR
 		log.Infof("%v", msg)
 		return msg
 	}
-	err := web.SetJwtCookie(c, user.ID)
+	err := jwt.SetCookie(user.ID)
 	if err != nil {
+		log.Info(err)
 		msg := dto.Msg{Success: false, Message: "設定cookie失敗"}
 		log.Infof("%v", msg)
 		return msg
@@ -64,8 +64,8 @@ func (u *User) Login(c *gin.Context, userRepo repository.User, req request.UserR
 	return msg
 }
 
-func (u *User) Logout(c *gin.Context) dto.Msg {
-	web.UnsetJwtCookie(c)
+func (u *User) Logout(jwt *web.Jwt) dto.Msg {
+	jwt.UnsetCookie()
 	msg := dto.Msg{Success: true, Message: "登出成功"}
 	log.Infof("%v", msg)
 	return msg
