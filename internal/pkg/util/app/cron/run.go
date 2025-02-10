@@ -1,17 +1,13 @@
 package cron
 
 import (
+	"beautyProject/internal/pkg/interfaces"
 	"github.com/go-co-op/gocron"
 	"os"
 	"time"
 )
 
-type IEnvironment interface {
-	InProduction(scheduler *gocron.Scheduler)
-	InOther(scheduler *gocron.Scheduler)
-}
-
-func Run(addJob IEnvironment, poolSize int) {
+func Run(addJob interfaces.IEnvironment, poolSize int) {
 	scheduler := gocron.NewScheduler(time.UTC)
 
 	// 配置並行池大小，控制同時執行的任務數量

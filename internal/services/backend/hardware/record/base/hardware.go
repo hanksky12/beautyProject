@@ -2,17 +2,18 @@ package base
 
 import (
 	"beautyProject/internal/pkg/dto"
+	"beautyProject/internal/pkg/interfaces"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
 
 type Recorder struct {
-	hardware WorkAndName
+	hardware interfaces.IWorkAndName
 	userId   string
 }
 
-func NewRecorder(hardware WorkAndName, userId string) *Recorder {
+func NewRecorder(hardware interfaces.IWorkAndName, userId string) *Recorder {
 	return &Recorder{
 		hardware: hardware,
 		userId:   userId,
