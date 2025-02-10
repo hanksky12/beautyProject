@@ -1,6 +1,7 @@
 package pc
 
 import (
+	"beautyProject/internal/pkg/entity"
 	"beautyProject/internal/pkg/enum"
 	"beautyProject/internal/pkg/model"
 	"beautyProject/internal/pkg/repository"
@@ -20,7 +21,6 @@ type Hardware struct {
 	RecordRepo        *repository.StatusRecord
 	RecordAverageRepo *repository.StatusRecordAverage
 	RecordQueryRepo   *repository.StatusRecordQuery
-	UserRepo          *repository.User
 }
 
 func (h *Hardware) Analyze() {
@@ -44,15 +44,15 @@ func (h *Hardware) Analyze() {
 	wg.Wait()
 }
 
-func (h *Hardware) splitStatusRecordByUser(records []repository.StatusRecordWithUser) map[uint][]repository.StatusRecordWithUser {
-	userMap := make(map[uint][]repository.StatusRecordWithUser)
+func (h *Hardware) splitStatusRecordByUser(records []entity.StatusRecordWithUser) map[uint][]entity.StatusRecordWithUser {
+	userMap := make(map[uint][]entity.StatusRecordWithUser)
 	for _, record := range records {
 		userMap[record.UserId] = append(userMap[record.UserId], record)
 	}
 	return userMap
 }
 
-func (h *Hardware) handleSingleUser(userID uint, records []repository.StatusRecordWithUser, wg *sync.WaitGroup) {
+func (h *Hardware) handleSingleUser(userID uint, records []entity.StatusRecordWithUser, wg *sync.WaitGroup) {
 	defer wg.Done()
 	logger := log.WithFields(log.Fields{"userID": userID})
 	logger.Infof("處理單一User資料: %s", userID)
@@ -69,8 +69,8 @@ func (h *Hardware) handleSingleUser(userID uint, records []repository.StatusReco
 	userWg.Wait()
 }
 
-func (h *Hardware) getHardwareRecord(records []repository.StatusRecordWithUser, hardware *enum.Hardware) []repository.StatusRecordWithUser {
-	partRecords := make([]repository.StatusRecordWithUser, 0)
+func (h *Hardware) getHardwareRecord(records []entity.StatusRecordWithUser, hardware *enum.Hardware) []entity.StatusRecordWithUser {
+	partRecords := make([]entity.StatusRecordWithUser, 0)
 	for _, record := range records {
 		if record.HardwareId == uint(hardware.Number) {
 			partRecords = append(partRecords, record)
@@ -79,7 +79,7 @@ func (h *Hardware) getHardwareRecord(records []repository.StatusRecordWithUser, 
 	return partRecords
 }
 
-func (h *Hardware) handleSingleHardware(hardware *enum.Hardware, userID uint, userWg *sync.WaitGroup, records []repository.StatusRecordWithUser, logger *log.Entry) {
+func (h *Hardware) handleSingleHardware(hardware *enum.Hardware, userID uint, userWg *sync.WaitGroup, records []entity.StatusRecordWithUser, logger *log.Entry) {
 	defer userWg.Done()
 	logger = logger.WithFields(log.Fields{"hardwareName": hardware.Name})
 	lengthRows := len(records)
@@ -100,7 +100,7 @@ func (h *Hardware) handleSingleHardware(hardware *enum.Hardware, userID uint, us
 	averageWg.Wait()
 }
 
-func (h *Hardware) computeAverage(hardware *enum.Hardware, userID uint, partRecords []repository.StatusRecordWithUser, averageWg *sync.WaitGroup, strData string, logger *log.Entry) {
+func (h *Hardware) computeAverage(hardware *enum.Hardware, userID uint, partRecords []entity.StatusRecordWithUser, averageWg *sync.WaitGroup, strData string, logger *log.Entry) {
 	defer averageWg.Done()
 	record := &model.StatusRecordAverage{
 		UserId:     userID,
@@ -116,7 +116,7 @@ func (h *Hardware) computeAverage(hardware *enum.Hardware, userID uint, partReco
 	logger.Info(strData, "=>更新完成")
 }
 
-func (h *Hardware) getAveragePercent(partRecords []repository.StatusRecordWithUser) float64 {
+func (h *Hardware) getAveragePercent(partRecords []entity.StatusRecordWithUser) float64 {
 	var total float64
 	for _, record := range partRecords {
 		total += record.Percent
@@ -124,7 +124,7 @@ func (h *Hardware) getAveragePercent(partRecords []repository.StatusRecordWithUs
 	return total / float64(len(partRecords))
 }
 
-func (h *Hardware) getIds(partRecords []repository.StatusRecordWithUser) []int {
+func (h *Hardware) getIds(partRecords []entity.StatusRecordWithUser) []int {
 	ids := make([]int, len(partRecords))
 	for i, record := range partRecords {
 		ids[i] = int(record.UserId)
