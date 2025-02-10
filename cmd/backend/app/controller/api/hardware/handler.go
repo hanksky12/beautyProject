@@ -3,6 +3,7 @@ package hardware
 import (
 	"beautyProject/internal/pkg/dto"
 	"beautyProject/internal/pkg/enum"
+	"beautyProject/internal/pkg/interfaces"
 	"beautyProject/internal/pkg/util/web/gin/handler/response"
 	"beautyProject/internal/pkg/web/request"
 	"beautyProject/internal/services/backend/hardware/info"
@@ -15,10 +16,13 @@ import (
 type Handler struct{}
 
 func (handler *Handler) RecordHardware(c *gin.Context, req request.HardwareReq) {
-	userId := strconv.FormatUint(uint64(c.GetUint("userId")), 10)
-	recorder := base.NewRecorder(handler.getHardware(req), userId)
-	recorder.Initialize()
 	var msgDto dto.Msg
+
+	hardware := handler.getHardware(req)
+	userId := strconv.FormatUint(uint64(c.GetUint("userId")), 10)
+
+	recorder := base.NewRecorder(hardware, userId)
+	recorder.Initialize()
 	switch req.State {
 	case enum.Start.Name:
 		msgDto = recorder.Start()
@@ -30,13 +34,7 @@ func (handler *Handler) RecordHardware(c *gin.Context, req request.HardwareReq) 
 	response.ProcessMsgDto(c, msgDto)
 }
 
-func (handler *Handler) HardwareInfo(c *gin.Context, req request.EmptyReq) {
-	hardware := &info.HardwareInfo{}
-	tableDto := hardware.Query()
-	response.ProcessTableDto(c, tableDto)
-}
-
-func (handler *Handler) getHardware(req request.HardwareReq) base.WorkAndName {
+func (handler *Handler) getHardware(req request.HardwareReq) interfaces.IWorkAndName {
 	switch req.Hardware {
 	case enum.Cpu.Name:
 		return &record.Cpu{}
@@ -46,4 +44,10 @@ func (handler *Handler) getHardware(req request.HardwareReq) base.WorkAndName {
 		return &record.Memory{}
 	}
 	return nil
+}
+
+func (handler *Handler) HardwareInfo(c *gin.Context, req request.EmptyReq) {
+	hardware := &info.HardwareInfo{}
+	tableDto := hardware.Query()
+	response.ProcessTableDto(c, tableDto)
 }

@@ -10,7 +10,6 @@ import (
 type Job struct{}
 
 func (j *Job) AnalyzeTask() {
-	userRepo := &repository.User{}
 	recordRepo := &repository.StatusRecord{}
 	recordAverageRepo := &repository.StatusRecordAverage{}
 	recordQueryRepo := &repository.StatusRecordQuery{}
@@ -19,7 +18,7 @@ func (j *Job) AnalyzeTask() {
 		RecordRepo:        recordRepo,
 		RecordAverageRepo: recordAverageRepo,
 		RecordQueryRepo:   recordQueryRepo,
-		UserRepo:          userRepo}
+	}
 	h.Analyze()
 }
 
