@@ -31,8 +31,15 @@ go run ./cmd/consumer/main.go
 
 go run ./cmd/cron/main.go
 
-## 6. 註冊使用者
-//todo 
+## 6. run 前端 
+cd frontend
+npm run serve
+
+## 7.註冊使用者
+http://localhost:8081/personal-register
+
+## 8.登入
+http://localhost:8081/login
 
 
 Log 查詢keyword
@@ -69,12 +76,19 @@ internal/services : logic
 
 ---
 
-主要套件
-logrus: log
-gorm: orm
-gin: web
-segmentio/kafka-go: kafka
-golang-migrate/migrate: sql migrate
+# 套件
+
+| 功能       | 套件名稱                   |
+|----------|------------------------|
+| log      | logrus                 |
+| orm      | gorm                   |
+| backend  | gin                    |
+| frontend | vue.js                 |
+| kafka    | segmentio/kafka-go     |
+| migrate  | golang-migrate/migrate |
+| test     | stretchr/testify       |
+| mock     | vektra/mockery         |
+
 
 
 
