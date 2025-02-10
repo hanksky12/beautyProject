@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"beautyProject/internal/pkg/entity"
 	"beautyProject/internal/pkg/model"
 	"beautyProject/internal/pkg/util/db/sql"
 	"beautyProject/internal/pkg/util/web/requestConversion"
@@ -14,14 +15,7 @@ func (s *StatusRecordAverage) Add(tx *gorm.DB, record *model.StatusRecordAverage
 	return tx.Create(record).Error
 }
 
-type FindByUserId struct {
-	ID           uint
-	HardwareName string
-	Percent      float64
-	Time         int64
-}
-
-func (s *StatusRecordAverage) FindByUserId(userId uint64, cond map[string]any, paging *requestConversion.PagingSchema) ([]FindByUserId, int, error) {
+func (s *StatusRecordAverage) FindByUserId(userId uint64, cond map[string]any, paging *requestConversion.PagingSchema) ([]entity.Record, int, error) {
 	query := sql.Db.Model(&model.StatusRecordAverage{}).
 		Select("status_record_average.id, status_record_average.time, status_record_average.percent, hardware.name as hardware_name").
 		Joins("left join hardware ON hardware.id = status_record_average.hardware_id")
@@ -40,5 +34,5 @@ func (s *StatusRecordAverage) FindByUserId(userId uint64, cond map[string]any, p
 	}
 	query = sql.ApplyConditions(query, cond, sqlConds)
 	query = sql.ApplyOrder(query, paging, sqlOrders)
-	return sql.DynamicQuery[FindByUserId](query, paging)
+	return sql.DynamicQuery[entity.Record](query, paging)
 }
