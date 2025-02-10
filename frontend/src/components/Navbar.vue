@@ -7,14 +7,14 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item-dropdown text="[硬體操作]" right>
-
-              <b-dropdown-item disabled>硬體相关</b-dropdown-item>
+              <b-dropdown-item disabled>硬體相關</b-dropdown-item>
               <b-dropdown-item ><router-link to="/hardware-query-and-operate">紀錄</router-link></b-dropdown-item>
 
           </b-nav-item-dropdown>
-          <b-nav-item-dropdown text="[紀錄操作]" right>
-            <b-dropdown-item disabled>资料查询</b-dropdown-item>
-            <b-dropdown-item ><router-link to="/record-query">[查询]</router-link></b-dropdown-item>
+          <b-nav-item-dropdown text="[資料查詢]" right>
+            <b-dropdown-item disabled>資料查詢</b-dropdown-item>
+            <b-dropdown-item ><router-link to="/average-record-query">[平均查詢]</router-link></b-dropdown-item>
+            <b-dropdown-item ><router-link to="/raw-record-query">[原始查詢]</router-link></b-dropdown-item>
 
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -27,7 +27,7 @@
             </template>
             <b-dropdown-item v-if="!isAuthenticated"><router-link to="/login">登入</router-link></b-dropdown-item>
             <b-dropdown-item v-if="isAuthenticated"  @click="logout">登出</b-dropdown-item>
-            <b-dropdown-item ><router-link to="/i-want-to-register">注册</router-link></b-dropdown-item>
+            <b-dropdown-item ><router-link to="/personal-register">注册</router-link></b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>

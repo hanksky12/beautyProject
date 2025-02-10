@@ -19,16 +19,22 @@ const routes = [
         import('../views/user/login/LoginView.vue')
   },
   {
-    path: '/i-want-to-register',
+    path: '/personal-register',
     name: 'register',
     component: () =>
         import('../views/user/register/RegisterView.vue')
   },
   {
-    path: '/record-query',
-    name: 'record-query',
+    path: '/average-record-query',
+    name: 'average-record-query',
     component: () =>
-        import('@/views/record/query/QueryView.vue')
+        import('@/views/record-average/query/QueryView.vue')
+  },
+  {
+    path: '/raw-record-query',
+    name: 'raw-record-query',
+    component: () =>
+        import('@/views/record-raw/query/QueryView.vue')
   },
   {
     path: '/hardware-query-and-operate',

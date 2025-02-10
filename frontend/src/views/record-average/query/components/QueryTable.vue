@@ -16,7 +16,7 @@ export default {
   },
   data () {
     return {
-      api_path: "/record/info",
+      api_path: "/record/average-info",
       columns: [
                 {
                   field: 'state',
