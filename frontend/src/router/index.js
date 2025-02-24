@@ -16,31 +16,44 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () =>
-        import('../views/user/login/LoginView.vue')
+        import('@/views/user/authentication/login/LoginView.vue')
   },
   {
     path: '/personal-register',
     name: 'register',
     component: () =>
-        import('../views/user/register/RegisterView.vue')
+        import('@/views/user/authentication/register/RegisterView.vue')
   },
   {
-    path: '/average-record-query',
-    name: 'average-record-query',
+    path: '/server-average-record-query',
+    name: 'server-average-record-query',
     component: () =>
-        import('@/views/record-average/query/QueryView.vue')
+        import('@/views/server/record-average/query/QueryView.vue')
   },
   {
-    path: '/raw-record-query',
-    name: 'raw-record-query',
+    path: '/server-raw-record-query',
+    name: 'server-raw-record-query',
     component: () =>
-        import('@/views/record-raw/query/QueryView.vue')
+        import('@/views/server/record-raw/query/QueryView.vue')
   },
   {
-    path: '/hardware-query-and-operate',
-    name: 'hardware-query-and-operate',
+    path: '/server-hardware-query-and-operate',
+    name: 'server-hardware-query-and-operate',
     component: () =>
-        import('@/views/hardware/query-and-operate/QueryAndOperateView.vue')
+        import('@/views/server/hardware/query-and-operate/QueryAndOperateView.vue')
+  },
+  {
+    path: '/user-raw-record-query',
+    name: 'user-raw-record-query',
+    component: () =>
+        import('@/views/user/record-raw/query/QueryView.vue')
+  },
+
+  {
+    path: '/user-mouse-action-query-and-operate',
+    name: 'user-mouse-action-query-and-operate',
+    component: () =>
+        import('@/views/user/mouse-action/query-and-operate/QueryAndOperateView.vue')
   },
 ]
 

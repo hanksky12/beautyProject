@@ -7,15 +7,19 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item-dropdown text="[硬體操作]" right>
-              <b-dropdown-item disabled>硬體相關</b-dropdown-item>
-              <b-dropdown-item ><router-link to="/hardware-query-and-operate">紀錄</router-link></b-dropdown-item>
-
+              <b-dropdown-item disabled>伺服器硬體</b-dropdown-item>
+              <b-dropdown-item ><router-link to="/server-hardware-query-and-operate">操作</router-link></b-dropdown-item>
+              <b-dropdown-divider />
+              <b-dropdown-item disabled>使用者滑鼠</b-dropdown-item>
+              <b-dropdown-item ><router-link to="/user-mouse-action-query-and-operate">操作</router-link></b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item-dropdown text="[資料查詢]" right>
-            <b-dropdown-item disabled>資料查詢</b-dropdown-item>
-            <b-dropdown-item ><router-link to="/average-record-query">[平均查詢]</router-link></b-dropdown-item>
-            <b-dropdown-item ><router-link to="/raw-record-query">[原始查詢]</router-link></b-dropdown-item>
-
+            <b-dropdown-item disabled>伺服器查詢</b-dropdown-item>
+            <b-dropdown-item ><router-link to="/server-average-record-query">[平均查詢]</router-link></b-dropdown-item>
+            <b-dropdown-item ><router-link to="/server-raw-record-query">[原始查詢]</router-link></b-dropdown-item>
+            <b-dropdown-divider />
+            <b-dropdown-item disabled>使用者查詢</b-dropdown-item>
+            <b-dropdown-item ><router-link to="/user-raw-record-query">[原始查詢]</router-link></b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
 
@@ -35,7 +39,7 @@
   </div>
 </template>
 <script>
-import {LogOutApiMixin} from "@/mixins/api/user/logOut";
+import {LogOutApiMixin} from "@/mixins/api/user/authentication/logOut";
 
 export default {
   mixins: [LogOutApiMixin],
