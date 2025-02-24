@@ -6,9 +6,9 @@ import {GetDomainMixin} from "./getDomain";
 export const CreateRequestMixin = {
     mixins: [GetCookieMixin,GetDomainMixin],
     methods: {
-        createRequest(requestData) {
+        createRequest(requestData, protocol="http") {
             console.log("createRequest")
-            const url = this.getDomain(requestData.domain) + requestData.path
+            const url = this.getDomain(requestData.domain, protocol) + requestData.path
             const headers = this.$_getHeaders(requestData)
             return this.$_createRequest(url, headers, requestData.method, requestData.body)
         },
