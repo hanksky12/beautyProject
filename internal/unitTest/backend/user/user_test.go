@@ -5,7 +5,7 @@ import (
 	"beautyProject/internal/pkg/model"
 	"beautyProject/internal/pkg/util/str"
 	"beautyProject/internal/pkg/web/request"
-	"beautyProject/internal/services/backend/user"
+	"beautyProject/internal/services/backend/user/authentication"
 	"errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/suite"
@@ -46,7 +46,7 @@ func (suite *Suite) TestUser_Login_Success() {
 		Return(nil)
 	suite.MockJwt.On("SetCookie", uint(0)).Return(nil)
 
-	userServ := user.User{}
+	userServ := authentication.User{}
 	msgDto := userServ.Login(suite.MockJwt, suite.MockUserRepo, suite.UserReq)
 
 	suite.Equal(true, msgDto.Success)
@@ -61,7 +61,7 @@ func (suite *Suite) TestUser_Login_Not_Register() {
 	//	Return(nil)
 	//suite.MockJwt.On("SetCookie", uint(0)).Return(nil)
 
-	userServ := user.User{}
+	userServ := authentication.User{}
 	msgDto := userServ.Login(suite.MockJwt, suite.MockUserRepo, suite.UserReq)
 
 	suite.Equal(false, msgDto.Success)
@@ -81,7 +81,7 @@ func (suite *Suite) TestUser_Login_Wrong_Password() {
 	//	Return(nil)
 	//suite.MockJwt.On("SetCookie", uint(0)).Return(nil)
 
-	userServ := user.User{}
+	userServ := authentication.User{}
 	msgDto := userServ.Login(suite.MockJwt, suite.MockUserRepo, suite.UserReq)
 
 	suite.Equal(false, msgDto.Success)
@@ -96,7 +96,7 @@ func (suite *Suite) TestUser_Login_SetCookie_Failed() {
 		Return(nil)
 	suite.MockJwt.On("SetCookie", uint(0)).Return(errors.New("cookie error"))
 
-	userServ := user.User{}
+	userServ := authentication.User{}
 	msgDto := userServ.Login(suite.MockJwt, suite.MockUserRepo, suite.UserReq)
 
 	suite.Equal(false, msgDto.Success)
@@ -111,7 +111,7 @@ func (suite *Suite) TestUser_Register_Success() {
 		Return(nil)
 	suite.MockJwt.On("SetCookie", uint(0)).Return(nil)
 
-	userServ := user.User{}
+	userServ := authentication.User{}
 	msgDto := userServ.Register(suite.MockJwt, suite.MockUserRepo, suite.UserReq)
 
 	suite.Equal(true, msgDto.Success)
@@ -125,7 +125,7 @@ func (suite *Suite) TestUser_Register_Repeat() {
 	//suite.MockUserRepo.On("Add", suite.ModelUser).
 	//	Return(nil)
 	//suite.MockJwt.On("SetCookie", uint(0)).Return(nil)
-	userServ := user.User{}
+	userServ := authentication.User{}
 	msgDto := userServ.Register(suite.MockJwt, suite.MockUserRepo, suite.UserReq)
 
 	suite.Equal(false, msgDto.Success)
@@ -139,7 +139,7 @@ func (suite *Suite) TestUser_Register_Sql_Insert_Failed() {
 	suite.MockUserRepo.On("Add", suite.ModelUser).
 		Return(errors.New("add error"))
 	//suite.MockJwt.On("SetCookie", uint(0)).Return(nil)
-	userServ := user.User{}
+	userServ := authentication.User{}
 	msgDto := userServ.Register(suite.MockJwt, suite.MockUserRepo, suite.UserReq)
 
 	suite.Equal(false, msgDto.Success)
@@ -154,7 +154,7 @@ func (suite *Suite) TestUser_Register_SetCookie_Failed() {
 		Return(nil)
 	suite.MockJwt.On("SetCookie", uint(0)).Return(errors.New("cookie error")).Once()
 
-	userServ := user.User{}
+	userServ := authentication.User{}
 	msgDto := userServ.Register(suite.MockJwt, suite.MockUserRepo, suite.UserReq)
 
 	suite.Equal(false, msgDto.Success)

@@ -1,6 +1,6 @@
 package entity
 
-type Record struct {
+type HardwareRecord struct {
 	ID           uint
 	HardwareName string
 	Percent      float64

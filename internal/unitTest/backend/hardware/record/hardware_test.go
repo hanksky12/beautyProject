@@ -2,7 +2,7 @@ package record
 
 import (
 	"beautyProject/internal/pkg/mocks"
-	"beautyProject/internal/services/backend/hardware/record/base"
+	"beautyProject/internal/services/backend/server/hardware/record/base"
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/suite"
 	"testing"

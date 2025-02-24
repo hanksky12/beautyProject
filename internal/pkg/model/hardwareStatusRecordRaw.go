@@ -1,6 +1,6 @@
 package model
 
-type StatusRecordRaw struct {
+type HardwareStatusRecordRaw struct {
 	Base
 	UserId     uint
 	HardwareId uint

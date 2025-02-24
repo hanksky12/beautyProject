@@ -1,8 +1,8 @@
-package pc
+package server
 
 import (
 	"beautyProject/internal/pkg/dto"
-	"beautyProject/internal/pkg/enum"
+	"beautyProject/internal/pkg/enum/hardware"
 	"beautyProject/internal/pkg/model"
 	"beautyProject/internal/pkg/repository"
 	"fmt"
@@ -11,11 +11,11 @@ import (
 )
 
 type Hardware struct {
-	RecordRepo    *repository.StatusRecord
-	RecordRepoRaw *repository.StatusRecordRaw
+	RecordRepo    *repository.HardwareStatusRecord
+	RecordRepoRaw *repository.HardwareStatusRecordRaw
 }
 
-func (h *Hardware) Record(hardware *enum.Hardware, value string, headers map[string]string, isRaw bool) {
+func (h *Hardware) Record(hardware *hardware.Hardware, value string, headers map[string]string, isRaw bool) {
 	log.Infof("%s is working...", hardware.Name)
 	var err error
 	percent, err := strconv.ParseFloat(value, 64)
@@ -33,7 +33,7 @@ func (h *Hardware) Record(hardware *enum.Hardware, value string, headers map[str
 	}
 	userId := uint(userIDUint)
 	if isRaw {
-		record := &model.StatusRecordRaw{
+		record := &model.HardwareStatusRecordRaw{
 			UserId:     userId,
 			HardwareId: hardwareId,
 			Percent:    percent,
@@ -44,7 +44,7 @@ func (h *Hardware) Record(hardware *enum.Hardware, value string, headers map[str
 		if err != nil {
 			log.Error(err)
 		}
-		record := &model.StatusRecord{
+		record := &model.HardwareStatusRecord{
 			UserId:     userId,
 			HardwareId: hardwareId,
 			Percent:    percent,

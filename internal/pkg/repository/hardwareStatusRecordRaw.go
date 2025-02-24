@@ -7,17 +7,17 @@ import (
 	"beautyProject/internal/pkg/util/web/requestConversion"
 )
 
-type StatusRecordRaw struct {
+type HardwareStatusRecordRaw struct {
 }
 
-func (s *StatusRecordRaw) Add(record *model.StatusRecordRaw) error {
+func (s *HardwareStatusRecordRaw) Add(record *model.HardwareStatusRecordRaw) error {
 	return sql.Db.Create(record).Error
 }
 
-func (s *StatusRecordRaw) FindByUserId(userId uint64, cond map[string]any, paging *requestConversion.PagingSchema) ([]entity.Record, int, error) {
-	query := sql.Db.Model(&model.StatusRecordRaw{}). // 修改為使用 StatusRecordRaw
-								Select("status_record_raw.id, status_record_raw.time, status_record_raw.percent, hardware.name as hardware_name").
-								Joins("left join hardware ON hardware.id = status_record_raw.hardware_id") // 修改為使用 status_record_raw
+func (s *HardwareStatusRecordRaw) FindByUserId(userId uint64, cond map[string]any, paging *requestConversion.PagingSchema) ([]entity.HardwareRecord, int, error) {
+	query := sql.Db.Model(&model.HardwareStatusRecordRaw{}).
+		Select("hardware_status_record_raw.id, hardware_status_record_raw.time, hardware_status_record_raw.percent, hardware.name as hardware_name").
+		Joins("left join hardware ON hardware.id = hardware_status_record_raw.hardware_id") // 修改為使用 status_record_raw
 	query = query.Where("user_id = ?", userId)
 	sqlConds := []sql.Cond{
 		{Name: "Hardware", Type: "string", Query: "hardware.name = ?"},
@@ -33,5 +33,5 @@ func (s *StatusRecordRaw) FindByUserId(userId uint64, cond map[string]any, pagin
 	}
 	query = sql.ApplyConditions(query, cond, sqlConds)
 	query = sql.ApplyOrder(query, paging, sqlOrders)
-	return sql.DynamicQuery[entity.Record](query, paging)
+	return sql.DynamicQuery[entity.HardwareRecord](query, paging)
 }
