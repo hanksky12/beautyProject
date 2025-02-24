@@ -1,18 +1,19 @@
 package user
 
 import (
-	"beautyProject/internal/pkg/util/web/gin/middleware/router"
+	"beautyProject/cmd/backend/app/controller/api/user/authentication"
+	"beautyProject/cmd/backend/app/controller/api/user/mouse"
+	"beautyProject/cmd/backend/app/controller/api/user/record"
 	"github.com/gin-gonic/gin"
 )
 
 func AddRoutes(rg *gin.RouterGroup) {
-	handler := Handler{}
-	rg.POST("/user",
-		router.Integrate(handler.Register, false))
-	rg.POST("/user/login",
-		router.Integrate(handler.Login, false))
-	rg.GET("/user/logout",
-		router.Integrate(handler.Logout, false))
-	rg.GET("/user/protect_info",
-		router.Integrate(handler.Info, true))
+	authenticationRG := rg.Group("/authentication")
+	authentication.AddRoutes(authenticationRG)
+
+	mouseRG := rg.Group("/mouse")
+	mouse.AddRoutes(mouseRG)
+
+	recordRG := rg.Group("/record")
+	record.AddRoutes(recordRG)
 }
