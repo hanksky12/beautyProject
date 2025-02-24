@@ -21,9 +21,11 @@ export const PrintToastMixin = {
             let message = ''
             if (responseData.is_success && responseData.code === 200) {
                 message = responseData.data
-                if ('failed_list' in message||'success_list' in message){
-                    message = this.$_replaceObjectKeys(message);
-                    message = this.$_replaceObjectValues(message);
+                if (message && typeof message === 'object') {
+                    if ('failed_list' in message || 'success_list' in message) {
+                        message = this.$_replaceObjectKeys(message);
+                        message = this.$_replaceObjectValues(message);
+                    }
                 }
             }
             else {
