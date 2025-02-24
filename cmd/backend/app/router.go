@@ -2,6 +2,7 @@ package app
 
 import (
 	"beautyProject/cmd/backend/app/controller/api"
+	"beautyProject/cmd/backend/app/controller/websocket"
 	"beautyProject/internal/pkg/util/web/gin/middleware"
 	"beautyProject/internal/pkg/web/request/validation/base"
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,7 @@ func Run() {
 	router := gin.New()
 	addMiddleware(router)
 	addRouter(router)
+	websocket.AddRouter()
 	registerValidator()
 	router.Run(":8070")
 	router.OPTIONS("/*path", func(c *gin.Context) {
