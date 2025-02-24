@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS status_record(
+CREATE TABLE IF NOT EXISTS hardware_status_record(
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNSIGNED NOT NULL,
     hardware_id BIGINT UNSIGNED NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS status_record(
     FOREIGN KEY(hardware_id) REFERENCES hardware(id)
     );
 
-CREATE TABLE IF NOT EXISTS status_record_raw(
+CREATE TABLE IF NOT EXISTS hardware_status_record_raw(
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNSIGNED NOT NULL,
     hardware_id BIGINT UNSIGNED NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS status_record_raw(
     FOREIGN KEY(hardware_id) REFERENCES hardware(id)
     );
 
-CREATE TABLE IF NOT EXISTS status_record_average(
+CREATE TABLE IF NOT EXISTS hardware_status_record_average(
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNSIGNED NOT NULL,
     hardware_id BIGINT UNSIGNED NOT NULL,

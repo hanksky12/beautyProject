@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS mouse_action_status_record_raw;
