@@ -8,7 +8,7 @@ func SortValidations(fl validator.FieldLevel) bool {
 		return true
 	}
 	switch sort {
-	case "hardware_name", "time", "percent":
+	case "hardware_name", "time", "percent", "mouse_action_name", "x", "y":
 		return true
 	default:
 		return false
