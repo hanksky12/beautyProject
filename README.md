@@ -1,7 +1,9 @@
-## 後端(生產者)
-api server (produce pc status)(query pc status)
-## 消費者
-consumer (record pc status)
+## 前端
+mouse action (web socket)
+## gin後端(生產者)
+api server (produce server status,mouse action)(query server status,mouse action)
+## kafka消費者
+consumer (record server status,mouse action)
 ## 定期
 cron (calculate pc status)
 
