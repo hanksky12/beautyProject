@@ -1,9 +1,11 @@
 package controller
 
 import (
-	"beautyProject/internal/pkg/enum"
+	"beautyProject/internal/pkg/enum/hardware"
+	"beautyProject/internal/pkg/enum/mouseAction"
 	"beautyProject/internal/pkg/repository"
-	"beautyProject/internal/services/consumer/pc"
+	"beautyProject/internal/services/consumer/server"
+	"beautyProject/internal/services/consumer/user"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -11,23 +13,19 @@ type Callback struct {
 	IsRaw bool
 }
 
-func (c *Callback) CpuRecord(key string, value string, headers map[string]string) {
-	c.RecordTask(enum.Cpu, key, value, headers)
-}
-
-func (c *Callback) DiskRecord(key string, value string, headers map[string]string) {
-	c.RecordTask(enum.Disk, key, value, headers)
-}
-
-func (c *Callback) MemRecord(key string, value string, headers map[string]string) {
-	c.RecordTask(enum.Memory, key, value, headers)
-}
-
-func (c *Callback) RecordTask(hardware *enum.Hardware, key string, value string, headers map[string]string) {
-	log.Info("RecordTask")
+func (c *Callback) RecordHardwareTask(hardware *hardware.Hardware, key string, value string, headers map[string]string) {
+	log.Info("RecordHardwareTask")
 	log.Info(hardware.Name)
-	repo := &repository.StatusRecord{}
-	repoRaw := &repository.StatusRecordRaw{}
-	pc := pc.Hardware{RecordRepo: repo, RecordRepoRaw: repoRaw}
+	repo := &repository.HardwareStatusRecord{}
+	repoRaw := &repository.HardwareStatusRecordRaw{}
+	pc := server.Hardware{RecordRepo: repo, RecordRepoRaw: repoRaw}
 	pc.Record(hardware, value, headers, c.IsRaw)
+}
+
+func (c *Callback) RecordMouseTask(action *mouseAction.MouseAction, key string, value string, headers map[string]string) {
+	log.Info("RecordMouseTask")
+	log.Info(action.Name)
+	repoRaw := &repository.MouseActionStatusRecordRaw{}
+	act := user.MouseAction{RecordRepoRaw: repoRaw}
+	act.Record(action, value, headers)
 }

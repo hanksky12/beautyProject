@@ -36,8 +36,12 @@ func Produce(topic string, msg kafka.Message) bool {
 	const retries = 3
 	for i := 0; i < retries; i++ {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
 		err = writer.WriteMessages(ctx, msg)
+		cancel()
+		if err == nil {
+			//log.Printf("Message sent successfully: %s\n", msg.Value)
+			return true // 成功後立即返回
+		}
 		if errors.Is(err, kafka.LeaderNotAvailable) || errors.Is(err, context.DeadlineExceeded) {
 			// 建立new topic 時，需要選舉
 			time.Sleep(time.Millisecond * 250)

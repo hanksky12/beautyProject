@@ -18,9 +18,25 @@ Kafka:
     - name: "cpu"
       partition: 3
       replication: 1
+      type: "hardware"
     - name: "disk"
       partition: 2
       replication: 1
+      type: "hardware"
     - name: "memory"
       partition: 1
       replication: 1
+      type: "hardware"
+
+    - name: "click"
+      partition: 1
+      replication: 1
+      type: "mouse_action"
+    - name: "move"
+      partition: 1
+      replication: 1
+      type: "mouse_action"
+    - name: "scroll"
+      partition: 1
+      replication: 1
+      type: "mouse_action"

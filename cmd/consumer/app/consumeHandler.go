@@ -3,27 +3,34 @@ package app
 import (
 	"beautyProject/cmd/consumer/app/controller"
 	"beautyProject/internal/pkg/enum"
+	"beautyProject/internal/pkg/enum/hardware"
+	"beautyProject/internal/pkg/enum/mouseAction"
 	log "github.com/sirupsen/logrus"
 )
 
 type ConsumeHandler struct {
-	handle func(string, string, map[string]string)
-}
-
-func (c *ConsumeHandler) SetHandle(topic string, callback controller.Callback) {
-	log.Infof("Set handle for topic: %s", topic)
-	switch topic {
-	case enum.Cpu.Name:
-		c.handle = callback.CpuRecord
-	case enum.Disk.Name:
-		c.handle = callback.DiskRecord
-	case enum.Memory.Name:
-		c.handle = callback.MemRecord
-	default:
-		c.handle = nil
-	}
+	Callback *controller.Callback
 }
 
 func (c *ConsumeHandler) Handle(key string, value string, headers map[string]string) {
-	c.handle(key, value, headers)
+	log.Info("ConsumeHandler Handle")
+	topic := headers["topic"]
+	switch topic {
+	case hardware.Cpu.Name, hardware.Disk.Name, hardware.Memory.Name:
+		hw, exist := enum.GetEnumByName(topic, hardware.Map)
+		if !exist {
+			log.Errorf("Hardware %s not exist", topic)
+			return
+		}
+		c.Callback.RecordHardwareTask(hw, key, value, headers)
+	case mouseAction.Click.Name, mouseAction.Move.Name, mouseAction.Scroll.Name:
+		action, exist := enum.GetEnumByName(topic, mouseAction.Map)
+		if !exist {
+			log.Errorf("MouseAction %s not exist", topic)
+			return
+		}
+		c.Callback.RecordMouseTask(action, key, value, headers)
+	default:
+		log.Errorf("Topic %s not exist", topic)
+	}
 }

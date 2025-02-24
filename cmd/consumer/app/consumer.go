@@ -23,12 +23,20 @@ func Run() {
 }
 
 func start(consumers []*kafkaUtil.Consumer, wg sync.WaitGroup) []*kafkaUtil.Consumer {
+	consumers = addHardwareConsumers(consumers, wg)
+	consumers = addMouseActionConsumers(consumers, wg)
+	return consumers
+}
+
+func addHardwareConsumers(consumers []*kafkaUtil.Consumer, wg sync.WaitGroup) []*kafkaUtil.Consumer {
 	for _, isRaw := range []bool{true, false} {
 		callback := controller.Callback{IsRaw: isRaw}
 		for _, topic := range kafkaUtil.KafkaConf.Topics {
-			handler := &ConsumeHandler{}
-			handler.SetHandle(topic.Name, callback)
-			groupID := fmt.Sprintf("raw_%v", isRaw)
+			if topic.Type != "hardware" {
+				continue
+			}
+			handler := &ConsumeHandler{Callback: &callback}
+			groupID := fmt.Sprintf("Group_Hardware_%v", isRaw)
 			for i := 0; i < topic.Partition; i++ {
 				consumer := kafkaUtil.CreateConsumer(topic.Name, groupID, &wg)
 				log.Infof("Consumer created [topic]: %s, [groupID]: %s number %d", topic.Name, groupID, i)
@@ -37,6 +45,24 @@ func start(consumers []*kafkaUtil.Consumer, wg sync.WaitGroup) []*kafkaUtil.Cons
 				wg.Add(1)
 			}
 		}
+	}
+	return consumers
+}
+
+func addMouseActionConsumers(consumers []*kafkaUtil.Consumer, wg sync.WaitGroup) []*kafkaUtil.Consumer {
+	isRaw := true
+	callback := controller.Callback{IsRaw: isRaw}
+	for _, topic := range kafkaUtil.KafkaConf.Topics {
+		if topic.Type != "mouse_action" {
+			continue
+		}
+		handler := &ConsumeHandler{Callback: &callback}
+		groupID := fmt.Sprintf("Group_MouseAction_%v", isRaw)
+		consumer := kafkaUtil.CreateConsumer(topic.Name, groupID, &wg)
+		log.Infof("Consumer created [topic]: %s, [groupID]: %s", topic.Name, groupID)
+		consumers = append(consumers, consumer)
+		go consumer.Consume(handler)
+		wg.Add(1)
 	}
 	return consumers
 }
