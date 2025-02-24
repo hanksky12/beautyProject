@@ -1,4 +1,4 @@
-class ResponseData {
+export class ResponseData {
   constructor(data, message, code, is_success = true) {
     this.data = data;
     this.message = message;
