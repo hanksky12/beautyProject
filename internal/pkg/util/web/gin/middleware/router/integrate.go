@@ -5,10 +5,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func Integrate[T any](handlerFunc func(*gin.Context, T), isAuth bool) gin.HandlerFunc {
+func Integrate[T any](handlerFunc func(*gin.Context, T), auth Auth) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer respRecover(c)
-		ok, userID := auth(c, isAuth)
+		ok, userID := authentication(c, auth)
 		if !ok {
 			return
 		}

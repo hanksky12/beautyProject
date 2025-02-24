@@ -1,6 +1,7 @@
 package web
 
 import (
+	"beautyProject/internal/pkg/enum/authLocation"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	log "github.com/sirupsen/logrus"
@@ -14,7 +15,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-const CookieName = "token"
+const TokenName = "token"
 
 type Jwt struct {
 	GinContext *gin.Context
@@ -41,21 +42,32 @@ func (j *Jwt) SetCookie(userId uint) error {
 	if err != nil {
 		return err
 	}
-	j.GinContext.SetCookie(CookieName, tokenString, int(expirationTime.Sub(time.Now()).Seconds()), "/", "localhost", false, true)
+	j.GinContext.SetCookie(TokenName, tokenString, int(expirationTime.Sub(time.Now()).Seconds()), "/", "localhost", false, true)
 	log.Info("SetJwtCookie Success")
 	return nil
 }
 
 func (j *Jwt) UnsetCookie() {
-	j.GinContext.SetCookie(CookieName, "", -1, "/", "localhost", false, true)
+	j.GinContext.SetCookie(TokenName, "", -1, "/", "localhost", false, true)
 }
 
-func (j *Jwt) GetToken() (string, error) {
-	tokenString, err := j.GinContext.Cookie(CookieName)
-	if err != nil {
-		return "", err
+func (j *Jwt) GetToken(authLoc *authLocation.AuthLocation) (string, error) {
+	switch authLoc {
+	case authLocation.Cookie:
+		tokenString, err := j.GinContext.Cookie(TokenName)
+		if err != nil {
+			return "", err
+		}
+		return tokenString, nil
+	case authLocation.QueryParams:
+		tokenString := j.GinContext.DefaultQuery(TokenName, "unknown")
+		if tokenString == "unknown" {
+			return "", nil
+		}
+		return tokenString, nil
+	default:
+		return "", nil
 	}
-	return tokenString, nil
 }
 
 func (j *Jwt) Parse(tokenStr string) (*Claims, error) {
