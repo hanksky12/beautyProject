@@ -1,7 +1,8 @@
-package user
+package authentication
 
 import (
 	"beautyProject/internal/pkg/dto"
+	"beautyProject/internal/pkg/enum/authLocation"
 	"beautyProject/internal/pkg/interfaces"
 	"beautyProject/internal/pkg/model"
 	"beautyProject/internal/pkg/util/str"
@@ -67,6 +68,18 @@ func (u *User) Login(jwt interfaces.ISetCookie, userRepo interfaces.IRepoUser, r
 func (u *User) Logout(jwt *web.Jwt) dto.Msg {
 	jwt.UnsetCookie()
 	msg := dto.Msg{Success: true, Message: "登出成功"}
+	log.Infof("%v", msg)
+	return msg
+}
+
+func (u *User) Token(jwt *web.Jwt) dto.Msg {
+	token, err := jwt.GetToken(authLocation.Cookie)
+	if err != nil {
+		msg := dto.Msg{Success: false, Message: "獲取token失敗"}
+		log.Infof("%v", msg)
+		return msg
+	}
+	msg := dto.Msg{Success: true, Message: token}
 	log.Infof("%v", msg)
 	return msg
 }
